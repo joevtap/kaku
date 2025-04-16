@@ -2,7 +2,7 @@ import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
 import { DeckSchema } from "@/src/types/DeckSchema";
 import Card from "@components/Card/Card";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -35,6 +35,11 @@ export default function DeckPage() {
         padding: 20,
       }}
     >
+      <Stack.Screen
+        options={{
+          title: deck?.name ?? "Deck",
+        }}
+      />
       <Card
         showBack={showBack}
         front={
