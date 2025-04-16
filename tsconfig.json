@@ -3,6 +3,15 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
+      "@icons/*": [
+        "./assets/icons/*"
+      ],
+      "@fonts/*": [
+        "./assets/fonts/*"
+      ],
+      "@images/*": [
+        "./assets/images/*"
+      ],
       "@/*": [
         "./*"
       ]
