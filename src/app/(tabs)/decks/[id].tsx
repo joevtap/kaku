@@ -76,7 +76,7 @@ export default function DeckPage() {
         }}
       >
         <Text style={{ color: colors.bg }}>
-          {showBack ? "View answer" : "Hide answer"}
+          {showBack ? "Hide answer" : "View answer"}
         </Text>
       </TouchableOpacity>
     </View>
