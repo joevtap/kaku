@@ -1,30 +1,30 @@
-import { fonts } from "@/src/constants/fonts";
+import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
 import { DeckSchema } from "@/src/types/DeckSchema";
-import { Link } from "expo-router";
-import { useEffect, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Link, useFocusEffect } from "expo-router";
+import { useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Decks() {
   const [decks, setDecks] = useState<DeckSchema[]>([]);
 
-  useEffect(() => {
-    // TODO: This is provisory, decks will be persisted in user's device's file system
+  useFocusEffect(() => {
     async function fetchLocalDecks() {
-      const data = require("@assets/decks/yojijukugo.json");
+      const decksFileSystemHandler = new DecksFileSystemHandler();
+      const _decks = await decksFileSystemHandler.getAllDecks();
 
-      setDecks([data]);
+      setDecks(_decks);
     }
 
     fetchLocalDecks();
-  }, []);
+  });
 
   const renderDecks = ({ item }: { item: DeckSchema }) => {
     const cardCount = item.cards.length;
     return (
       <Link
         href={{
-          pathname: "/decks/[id]",
-          params: { id: item.id },
+          pathname: "/decks/[deck]",
+          params: { deck: item.slug },
         }}
         key={item.id}
       >

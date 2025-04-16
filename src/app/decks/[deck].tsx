@@ -1,29 +1,30 @@
 import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
+import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
 import { DeckSchema } from "@/src/types/DeckSchema";
 import Card from "@components/Card/Card";
-import { Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function DeckPage() {
-  const { id } = useLocalSearchParams();
+  const { deck: deckSlug } = useLocalSearchParams();
 
   const [deck, setDeck] = useState<DeckSchema>();
   const [showBack, setShowBack] = useState(false);
 
-  useEffect(() => {
-    // TODO: This is provisory, decks will be persisted in user's device's file system
+  useFocusEffect(() => {
     async function fetchLocalDeck() {
-      const data = require("@assets/decks/yojijukugo.json");
+      const decksFileSystemHandler = new DecksFileSystemHandler();
+      const data = await decksFileSystemHandler.read(deckSlug as string);
 
-      setDeck(data);
+      if (data) {
+        setDeck(data);
+      }
     }
 
-    console.log("Deck ID: ", id);
-
     fetchLocalDeck();
-  }, []);
+  });
 
   return (
     <View
@@ -47,6 +48,7 @@ export default function DeckPage() {
             <Text
               style={{
                 fontSize: 40,
+                lineHeight: 48,
                 fontFamily:
                   fonts[deck?.cards[0].front[0].writingSystem ?? "latin"],
               }}
@@ -59,7 +61,8 @@ export default function DeckPage() {
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Text
               style={{
-                fontSize: 20,
+                fontSize: 24,
+                lineHeight: 32,
                 fontFamily:
                   fonts[deck?.cards[0].back[0].writingSystem ?? "latin"],
               }}

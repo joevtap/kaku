@@ -26,6 +26,8 @@ export interface CardSchema {
 
 export interface DeckSchema {
   id: Id;
+  slug: string;
+  version: string;
   name: string;
   description: string;
   cards: CardSchema[];
