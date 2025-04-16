@@ -14,12 +14,12 @@
 		96905EF65AED1B983A6B3ABC /* libPods-kaku.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-kaku.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		956194BAC12145E6A6395A4B /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900B9AEDF1CF4909A8B77CD4 /* noop-file.swift */; };
-		DBC3D69EDD064843B2A80CFD /* KleeOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4409CEB222684F2CA5CB7CCD /* KleeOne-Regular.ttf */; };
-		DE7CDA489BD04A518996401A /* KleeOne-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D7EA2523A044D13B24F41DB /* KleeOne-SemiBold.ttf */; };
-		82B1113406104614B052BE46 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5184CECC19754336AD700EA4 /* Lato-Regular.ttf */; };
-		D55856D022CE4934A7C566A7 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 57B33A41931D4985BAC7651B /* Lato-Bold.ttf */; };
-		59F42530675A46BC87C89B56 /* Lato-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9993670272841F4B628CCAE /* Lato-Italic.ttf */; };
+		A010B1EA2869494987C66645 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240F7E1B614401E9263DB36 /* noop-file.swift */; };
+		A03794BF22D84F829AE8C708 /* KleeOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 75752988BA6C4446AAD5E9EA /* KleeOne-Regular.ttf */; };
+		7663452F11394117924A0550 /* KleeOne-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB46ECBAAC6C43FB900B0E17 /* KleeOne-SemiBold.ttf */; };
+		375686BC44D9445699D371D2 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2838F9B577A646488FC55CC6 /* Lato-Regular.ttf */; };
+		5C9AE0FBECF04F4F8ABCDA1E /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EADBCB23DDA400381A698C2 /* Lato-Bold.ttf */; };
+		46AA8E5B754A4A178AFD4EB1 /* Lato-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0127F0DD1ABD42EFA7ECABD0 /* Lato-Italic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,13 +36,13 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-kaku/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		900B9AEDF1CF4909A8B77CD4 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "kaku/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
-		5903C121F2C047D7B3ADFCBB /* kaku-Bridging-Header.h */ = {isa = PBXFileReference; name = "kaku-Bridging-Header.h"; path = "kaku/kaku-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
-		4409CEB222684F2CA5CB7CCD /* KleeOne-Regular.ttf */ = {isa = PBXFileReference; name = "KleeOne-Regular.ttf"; path = "../assets/fonts/KleeOne-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		3D7EA2523A044D13B24F41DB /* KleeOne-SemiBold.ttf */ = {isa = PBXFileReference; name = "KleeOne-SemiBold.ttf"; path = "../assets/fonts/KleeOne-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		5184CECC19754336AD700EA4 /* Lato-Regular.ttf */ = {isa = PBXFileReference; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		57B33A41931D4985BAC7651B /* Lato-Bold.ttf */ = {isa = PBXFileReference; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F9993670272841F4B628CCAE /* Lato-Italic.ttf */ = {isa = PBXFileReference; name = "Lato-Italic.ttf"; path = "../assets/fonts/Lato-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0240F7E1B614401E9263DB36 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "kaku/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		16D482F0026B43418B1C122D /* kaku-Bridging-Header.h */ = {isa = PBXFileReference; name = "kaku-Bridging-Header.h"; path = "kaku/kaku-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		75752988BA6C4446AAD5E9EA /* KleeOne-Regular.ttf */ = {isa = PBXFileReference; name = "KleeOne-Regular.ttf"; path = "../assets/fonts/KleeOne-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AB46ECBAAC6C43FB900B0E17 /* KleeOne-SemiBold.ttf */ = {isa = PBXFileReference; name = "KleeOne-SemiBold.ttf"; path = "../assets/fonts/KleeOne-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2838F9B577A646488FC55CC6 /* Lato-Regular.ttf */ = {isa = PBXFileReference; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8EADBCB23DDA400381A698C2 /* Lato-Bold.ttf */ = {isa = PBXFileReference; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0127F0DD1ABD42EFA7ECABD0 /* Lato-Italic.ttf */ = {isa = PBXFileReference; name = "Lato-Italic.ttf"; path = "../assets/fonts/Lato-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,8 +67,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				900B9AEDF1CF4909A8B77CD4 /* noop-file.swift */,
-				5903C121F2C047D7B3ADFCBB /* kaku-Bridging-Header.h */,
+				0240F7E1B614401E9263DB36 /* noop-file.swift */,
+				16D482F0026B43418B1C122D /* kaku-Bridging-Header.h */,
 			);
 			name = kaku;
 			sourceTree = "<group>";
@@ -98,7 +98,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
 				D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */,
-				D5F9D43769A249A7A2C42BE2 /* Resources */,
+				65525853CA6A4C9E813368C5 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,14 +147,14 @@
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
-		D5F9D43769A249A7A2C42BE2 /* Resources */ = {
+		65525853CA6A4C9E813368C5 /* Resources */ = {
 			isa = "PBXGroup";
 			children = (
-				4409CEB222684F2CA5CB7CCD /* KleeOne-Regular.ttf */,
-				3D7EA2523A044D13B24F41DB /* KleeOne-SemiBold.ttf */,
-				5184CECC19754336AD700EA4 /* Lato-Regular.ttf */,
-				57B33A41931D4985BAC7651B /* Lato-Bold.ttf */,
-				F9993670272841F4B628CCAE /* Lato-Italic.ttf */,
+				75752988BA6C4446AAD5E9EA /* KleeOne-Regular.ttf */,
+				AB46ECBAAC6C43FB900B0E17 /* KleeOne-SemiBold.ttf */,
+				2838F9B577A646488FC55CC6 /* Lato-Regular.ttf */,
+				8EADBCB23DDA400381A698C2 /* Lato-Bold.ttf */,
+				0127F0DD1ABD42EFA7ECABD0 /* Lato-Italic.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -222,12 +222,12 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				52501D83713B45339A4D5C27 /* kaku-Bridging-Header.h in Resources */,
-				DBC3D69EDD064843B2A80CFD /* KleeOne-Regular.ttf in Resources */,
-				DE7CDA489BD04A518996401A /* KleeOne-SemiBold.ttf in Resources */,
-				82B1113406104614B052BE46 /* Lato-Regular.ttf in Resources */,
-				D55856D022CE4934A7C566A7 /* Lato-Bold.ttf in Resources */,
-				59F42530675A46BC87C89B56 /* Lato-Italic.ttf in Resources */,
+				A35C1EDCEFCA4E32A3BF4B5C /* kaku-Bridging-Header.h in Resources */,
+				A03794BF22D84F829AE8C708 /* KleeOne-Regular.ttf in Resources */,
+				7663452F11394117924A0550 /* KleeOne-SemiBold.ttf in Resources */,
+				375686BC44D9445699D371D2 /* Lato-Regular.ttf in Resources */,
+				5C9AE0FBECF04F4F8ABCDA1E /* Lato-Bold.ttf in Resources */,
+				46AA8E5B754A4A178AFD4EB1 /* Lato-Italic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +303,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				956194BAC12145E6A6395A4B /* noop-file.swift in Sources */,
+				A010B1EA2869494987C66645 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
