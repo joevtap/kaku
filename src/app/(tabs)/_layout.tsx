@@ -25,7 +25,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="decks"
+        name="decks/index"
         options={{
           title: "Decks",
           tabBarIcon: ({ color }) => <Cards size={28} color={color} />,
