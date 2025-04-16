@@ -1,5 +1,5 @@
 import { fonts } from "@/src/constants/fonts";
-import { Cards } from "@/src/components/icons";
+import { Cards } from "@components/Icons";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Index() {

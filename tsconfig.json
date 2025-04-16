@@ -4,7 +4,7 @@
     "strict": true,
     "paths": {
       "@icons": [
-        "./src/components/icons/index.tsx"
+        "./src/components/Icons/index.tsx"
       ],
       "@components/*": [
         "./src/components/*"
