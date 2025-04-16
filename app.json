@@ -25,10 +25,26 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "assets/fonts/KleeOne-Regular.ttf",
+            "assets/fonts/KleeOne-SemiBold.ttf",
+            "assets/fonts/Lato-Regular.ttf",
+            "assets/fonts/Lato-Bold.ttf",
+            "assets/fonts/Lato-Bold.ttf",
+            "assets/fonts/Lato-Italic.ttf"
+          ]
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.kaku"
     }
   }
 }
