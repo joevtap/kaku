@@ -4,10 +4,10 @@
     "strict": true,
     "paths": {
       "@icons": [
-        "./components/icons/index.tsx"
+        "./src/components/icons/index.tsx"
       ],
       "@components/*": [
-        "./components/*"
+        "./src/components/*"
       ],
       "@assets/*": [
         "./assets/*"
