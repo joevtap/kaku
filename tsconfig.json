@@ -3,14 +3,14 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@icons/*": [
-        "./assets/icons/*"
+      "@icons": [
+        "./components/icons/index.tsx"
       ],
-      "@fonts/*": [
-        "./assets/fonts/*"
+      "@components/*": [
+        "./components/*"
       ],
-      "@images/*": [
-        "./assets/images/*"
+      "@assets/*": [
+        "./assets/*"
       ],
       "@/*": [
         "./*"

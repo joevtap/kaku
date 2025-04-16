@@ -1,6 +1,5 @@
+import { Cards } from "@icons";
 import { StyleSheet, Text, View } from "react-native";
-import Cards from "@icons/cards.svg";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function Index() {
   return (
@@ -11,9 +10,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <MaterialCommunityIcons name="function" size={80} color="rebeccapurple" />
-      <Cards width={80} height={80} color={"rebeccapurple"} />
-
+      <Cards size={100} color="#000" />
       <Text style={styles.noFont}>Text without setting a font</Text>
       <Text style={styles.japanese}>日本語のテキスト</Text>
       <Text style={styles.customFont}>Text with custom font</Text>
