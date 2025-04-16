@@ -1,3 +1,4 @@
+import { fonts } from "@/constants/fonts";
 import { Cards } from "@icons";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -24,10 +25,10 @@ const styles = StyleSheet.create({
   },
   japanese: {
     fontSize: 24,
-    fontFamily: "KleeOne-SemiBold",
+    fontFamily: fonts.jp,
   },
   customFont: {
     fontSize: 24,
-    fontFamily: "Lato-Regular",
+    fontFamily: fonts.latin,
   },
 });
