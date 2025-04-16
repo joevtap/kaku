@@ -1,0 +1,34 @@
+{
+  "id": 1,
+  "name": "Yojijukugo - Japanese Idioms",
+  "description": "A collection of Japanese idiomatic expressions that consist of four kanji characters.",
+  "cards": [
+    {
+      "id": 1,
+      "front": [
+        {
+          "type": "text",
+          "content": "一生懸命",
+          "writingSystem": "jp"
+        },
+        {
+          "type": "text",
+          "content": "いっしょうけんめい",
+          "writingSystem": "jp"
+        }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "As hard as one can",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "with all one's might",
+          "writingSystem": "latin"
+        }
+      ]
+    }
+  ]
+}
