@@ -31,7 +31,6 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
         );
 
         const text = file.text();
-        const deck = JSON.parse(text) as DeckSchema;
 
         const deckDigest = await this._digest(text);
         const exampleDeckDigest = await this._digest(
