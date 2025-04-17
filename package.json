@@ -5,8 +5,12 @@
     "start": "tsx --watch index.ts"
   },
   "dependencies": {
+    "date-fns": "^4.1.0",
     "ts-fsrs": "^4.7.1",
     "tsx": "^4.19.3"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^22.14.1"
+  }
 }
