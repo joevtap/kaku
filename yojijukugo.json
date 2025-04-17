@@ -1,0 +1,36 @@
+{
+  "id": 1,
+  "version": "1.0.0",
+  "slug": "yojijukugo",
+  "name": "(Example Deck) Yojijukugo",
+  "description": "A collection of Japanese idiomatic expressions that consist of four kanji characters.",
+  "cards": [
+    {
+      "id": 1,
+      "front": [
+        {
+          "type": "text",
+          "content": "一生懸命",
+          "writingSystem": "jp"
+        },
+        {
+          "type": "text",
+          "content": "いっしょうけんめい",
+          "writingSystem": "jp"
+        }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "With all one's might",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "As hard as one can",
+          "writingSystem": "latin"
+        }
+      ]
+    }
+  ]
+}
