@@ -1,34 +1,70 @@
-import { fonts } from "@/src/constants/fonts";
-import { Cards } from "@components/Icons";
-import { StyleSheet, Text, View } from "react-native";
+import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
+import { StaticDeck } from "@/src/types/Deck";
+import { Link, useFocusEffect } from "expo-router";
+import { useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
-export default function Index() {
+export default function Decks() {
+  const [decks, setDecks] = useState<StaticDeck[]>([]);
+
+  useFocusEffect(() => {
+    async function fetchLocalDecks() {
+      const decksFileSystemHandler = new DecksFileSystemHandler();
+      const _decks = await decksFileSystemHandler.getAllDecks();
+
+      setDecks(_decks);
+    }
+
+    fetchLocalDecks();
+  });
+
+  const renderDecks = ({ item }: { item: StaticDeck }) => {
+    const cardCount = item.cards.length;
+    return (
+      <Link
+        href={{
+          pathname: "/decks/[deck]",
+          params: { deck: item.slug },
+        }}
+        key={item.slug}
+      >
+        <View style={styles.decksListItem}>
+          <Text style={styles.decksListItemTitle}>{item.name}</Text>
+          <Text
+            style={styles.decksListItemCardCount}
+          >{`${cardCount} card${cardCount > 1 ? "s" : ""}`}</Text>
+        </View>
+      </Link>
+    );
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Cards size={100} color="#000" />
-      <Text style={styles.noFont}>Text without setting a font</Text>
-      <Text style={styles.japanese}>日本語のテキスト</Text>
-      <Text style={styles.customFont}>Text with custom font</Text>
+    <View style={styles.container}>
+      <FlatList
+        data={decks}
+        renderItem={renderDecks}
+        style={styles.decksList}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  noFont: {
-    fontSize: 24,
+  container: { flex: 1, padding: 16, gap: 16 },
+  decksList: {
+    width: "100%",
   },
-  japanese: {
-    fontSize: 24,
-    fontFamily: fonts.jp,
+  decksListItem: {
+    gap: 4,
   },
-  customFont: {
-    fontSize: 24,
-    fontFamily: fonts.latin,
+  decksListItemTitle: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontFamily: "Lato-Regular",
+  },
+  decksListItemCardCount: {
+    fontSize: 14,
+    lineHeight: 16,
+    fontFamily: "Lato-Regular",
   },
 });

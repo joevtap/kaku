@@ -1,5 +1,4 @@
 {
-  "id": 1,
   "version": "1.0.0",
   "slug": "yojijukugo",
   "name": "(Example Deck) Yojijukugo",
@@ -7,6 +6,25 @@
   "cards": [
     {
       "id": 1,
+      "front": [
+        { "type": "text", "content": "十人十色", "writingSystem": "jp" },
+        { "type": "text", "content": "じゅうにんといろ", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Ten people, ten colors",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Different strokes for different folks",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 2,
       "front": [
         {
           "type": "text",
@@ -28,6 +46,248 @@
         {
           "type": "text",
           "content": "As hard as one can",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "front": [
+        { "type": "text", "content": "意気消沈", "writingSystem": "jp" },
+        { "type": "text", "content": "いきしょうちん", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Feeling downcast",
+          "writingSystem": "latin"
+        },
+        { "type": "text", "content": "Despondency", "writingSystem": "latin" }
+      ]
+    },
+    {
+      "id": 4,
+      "front": [
+        { "type": "text", "content": "自業自得", "writingSystem": "jp" },
+        { "type": "text", "content": "じごうじとく", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "You reap what you sow",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "One's own fault",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "front": [
+        { "type": "text", "content": "有名無実", "writingSystem": "jp" },
+        { "type": "text", "content": "ゆうめいむじつ", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Famous in name only",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Empty title, no substance",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "front": [
+        { "type": "text", "content": "東奔西走", "writingSystem": "jp" },
+        { "type": "text", "content": "とうほんせいそう", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Running around busily",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Dashing east and west",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "front": [
+        { "type": "text", "content": "起死回生", "writingSystem": "jp" },
+        { "type": "text", "content": "きしかいせい", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Resurrection from the brink of death",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Turnaround revival",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "front": [
+        { "type": "text", "content": "以心伝心", "writingSystem": "jp" },
+        { "type": "text", "content": "いしんでんしん", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Heart-to-heart communication",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Tacit understanding",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "front": [
+        { "type": "text", "content": "支離滅裂", "writingSystem": "jp" },
+        { "type": "text", "content": "しりめつれつ", "writingSystem": "jp" }
+      ],
+      "back": [
+        { "type": "text", "content": "Incoherent", "writingSystem": "latin" },
+        { "type": "text", "content": "Disjointed", "writingSystem": "latin" }
+      ]
+    },
+    {
+      "id": 10,
+      "front": [
+        { "type": "text", "content": "古今東西", "writingSystem": "jp" },
+        { "type": "text", "content": "ここんとうざい", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "From ancient to modern times",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Throughout the ages and places",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "front": [
+        { "type": "text", "content": "異口同音", "writingSystem": "jp" },
+        { "type": "text", "content": "いくどうおん", "writingSystem": "jp" }
+      ],
+      "back": [
+        { "type": "text", "content": "Unanimously", "writingSystem": "latin" },
+        { "type": "text", "content": "In one voice", "writingSystem": "latin" }
+      ]
+    },
+    {
+      "id": 12,
+      "front": [
+        { "type": "text", "content": "千載一遇", "writingSystem": "jp" },
+        { "type": "text", "content": "せんざいいちぐう", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Once in a thousand years",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "A rare, chance encounter",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "front": [
+        { "type": "text", "content": "電光石火", "writingSystem": "jp" },
+        { "type": "text", "content": "でんこうせっか", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Lightning speed",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "In the blink of an eye",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "front": [
+        { "type": "text", "content": "一期一会", "writingSystem": "jp" },
+        { "type": "text", "content": "いちごいちえ", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Once-in-a-lifetime encounter",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Treasure every meeting",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "front": [
+        { "type": "text", "content": "温故知新", "writingSystem": "jp" },
+        { "type": "text", "content": "おんこちしん", "writingSystem": "jp" }
+      ],
+      "back": [
+        {
+          "type": "text",
+          "content": "Learn new from the old",
+          "writingSystem": "latin"
+        },
+        {
+          "type": "text",
+          "content": "Review the past to know the new",
+          "writingSystem": "latin"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "front": [
+        { "type": "text", "content": "海千山千", "writingSystem": "jp" },
+        { "type": "text", "content": "うみせんやません", "writingSystem": "jp" }
+      ],
+      "back": [
+        { "type": "text", "content": "Worldly-wise", "writingSystem": "latin" },
+        {
+          "type": "text",
+          "content": "Cunning and experienced",
           "writingSystem": "latin"
         }
       ]

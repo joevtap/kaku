@@ -1,4 +1,4 @@
-import { DeckSchema } from "@/src/types/DeckSchema";
+import { StaticDeck } from "@/src/types/Deck";
 import { Directory, File, Paths } from "expo-file-system/next";
 import Rusha from "rusha";
 
@@ -51,24 +51,24 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
   }
 
-  public async read(slug: string): Promise<DeckSchema | null> {
+  public async read(slug: string): Promise<StaticDeck | null> {
     const file = new File(Paths.join(this.decksPath, `${slug}.json`));
 
     if (file.exists) {
-      return JSON.parse(file.text()) as DeckSchema;
+      return JSON.parse(file.text()) as StaticDeck;
     }
 
     return null;
   }
 
-  public async getAllDecks(): Promise<DeckSchema[]> {
+  public async getAllDecks(): Promise<StaticDeck[]> {
     const uris = await this._getDecksUris();
-    const decks: DeckSchema[] = [];
+    const decks: StaticDeck[] = [];
 
     for (const uri of uris) {
       const file = new File(uri);
       const text = file.text();
-      const deck = JSON.parse(text) as DeckSchema;
+      const deck = JSON.parse(text) as StaticDeck;
       decks.push(deck);
     }
 

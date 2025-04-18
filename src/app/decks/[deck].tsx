@@ -1,17 +1,16 @@
 import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
 import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
-import { DeckSchema } from "@/src/types/DeckSchema";
-import Card from "@components/Card/Card";
+import { FlashCard, StaticDeck } from "@/src/types/Deck";
 import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function DeckPage() {
   const { deck: deckSlug } = useLocalSearchParams();
 
-  const [deck, setDeck] = useState<DeckSchema>();
-  const [showBack, setShowBack] = useState(false);
+  const [deck, setDeck] = useState<StaticDeck>();
+  const [cards, setCards] = useState(deck?.cards ?? []);
 
   useFocusEffect(() => {
     async function fetchLocalDeck() {
@@ -20,73 +19,86 @@ export default function DeckPage() {
 
       if (data) {
         setDeck(data);
+        setCards(data.cards);
       }
     }
 
     fetchLocalDeck();
   });
 
+  const renderCards = ({ item, index }: { item: FlashCard; index: number }) => {
+    return (
+      <View style={styles.cardsListItem}>
+        <Text style={styles.cardsListItemId}>{index + 1}</Text>
+        <View style={{ gap: 4 }}>
+          {item.front.map((front, index) => {
+            if (index <= 1) {
+              return (
+                <Text
+                  style={getTextStyle(front.writingSystem, index)}
+                  key={front.content}
+                >
+                  {front.content}
+                </Text>
+              );
+            }
+          })}
+        </View>
+      </View>
+    );
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: colors.bg,
-        padding: 20,
-      }}
-    >
+    <View style={styles.container}>
       <Stack.Screen
         options={{
           title: deck?.name ?? "Deck",
         }}
       />
-      <Card
-        showBack={showBack}
-        front={
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 40,
-                lineHeight: 48,
-                fontFamily:
-                  fonts[deck?.cards[0].front[0].writingSystem ?? "latin"],
-              }}
-            >
-              {deck?.cards[0].front[0].content}
-            </Text>
-          </View>
-        }
-        back={
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 24,
-                lineHeight: 32,
-                fontFamily:
-                  fonts[deck?.cards[0].back[0].writingSystem ?? "latin"],
-              }}
-            >
-              {deck?.cards[0].back[0].content}
-            </Text>
-          </View>
-        }
+      <FlatList
+        data={cards}
+        renderItem={renderCards}
+        style={styles.cardsList}
+        ItemSeparatorComponent={Separator}
       />
-
-      <TouchableOpacity
-        onPress={() => setShowBack(!showBack)}
-        style={{
-          backgroundColor: colors.fg,
-          padding: 10,
-          borderRadius: 5,
-          width: "100%",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: colors.bg }}>
-          {showBack ? "Hide answer" : "View answer"}
-        </Text>
-      </TouchableOpacity>
     </View>
   );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, gap: 16 },
+  cardsListItemId: {
+    fontFamily: "Lato-Regular",
+    fontSize: 12,
+    lineHeight: 16,
+    color: colors.fg,
+  },
+  cardsList: {
+    width: "100%",
+    paddingHorizontal: 16,
+  },
+  cardsListItem: {
+    gap: 16,
+    paddingVertical: 16,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#ddd",
+    width: "100%",
+  },
+});
+
+const getTextStyle = (font: keyof typeof fonts, index: number) => {
+  return {
+    fontFamily: fonts[font],
+    fontSize: 18 - index * 4,
+    lineHeight: 24 - index * 4,
+    color: colors.fg,
+  };
+};
+
+function Separator() {
+  return <View style={styles.separator} />;
 }
