@@ -1,4 +1,5 @@
 import { StaticDeck } from "@/src/types/Deck";
+import { Manifest } from "@/src/types/Manifest";
 import { Directory, File, Paths } from "expo-file-system/next";
 import Rusha from "rusha";
 
@@ -10,7 +11,7 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
   private readonly decksPath: string = Paths.join(Paths.document, "decks");
 
   public async bootstrap(): Promise<void> {
-    const exampleDeck = require("@assets/decks/yojijukugo.json");
+    const exampleDeck: StaticDeck = require("@assets/decks/yojijukugo.json");
     const dir = new Directory(this.decksPath);
 
     if (!dir.exists) {
@@ -20,6 +21,20 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
 
     if (dir.exists) {
       const file = new File(Paths.join(this.decksPath, "yojijukugo.json"));
+      const manifest = new File(Paths.join(Paths.document), "manifest.json");
+
+      if (!manifest.exists) {
+        manifest.create();
+        const { name, slug, description } = exampleDeck;
+
+        const _manifest: Manifest = {
+          decks: [
+            { name, slug, description, cardAmount: exampleDeck.cards.length },
+          ],
+        };
+
+        manifest.write(JSON.stringify(_manifest));
+      }
 
       if (!file.exists) {
         file.create();
@@ -30,9 +45,10 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
           "[DecksFileSystemHandler] Checking if example deck is up to date",
         );
 
-        const text = file.text();
+        const exampleDeckText = file.text();
+        const manifestText = manifest.text();
 
-        const deckDigest = await this._digest(text);
+        const deckDigest = await this._digest(exampleDeckText);
         const exampleDeckDigest = await this._digest(
           JSON.stringify(exampleDeck),
         );
@@ -44,6 +60,23 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
           console.log(
             `[DecksFileSystemHandler] Example deck file updated to version v${exampleDeck.version}`,
           );
+
+          const _manifest: Manifest = JSON.parse(manifestText);
+
+          _manifest.decks
+            .filter((deck) => deck.slug === exampleDeck.slug)
+            .forEach((deck) => {
+              const { name, slug, description } = exampleDeck;
+
+              deck.name = name;
+              deck.slug = slug;
+              deck.description = description;
+              deck.cardAmount = exampleDeck.cards.length;
+            });
+
+          manifest.write(JSON.stringify(_manifest));
+
+          console.log("[DecksFileSystemHandler] Manifest updated");
         }
       }
 
@@ -61,38 +94,17 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     return null;
   }
 
-  public async getAllDecks(): Promise<StaticDeck[]> {
-    const uris = await this._getDecksUris();
-    const decks: StaticDeck[] = [];
+  public async getManifest(): Promise<Manifest> {
+    const _manifest = new File(Paths.join(Paths.document, "manifest.json"));
 
-    for (const uri of uris) {
-      const file = new File(uri);
-      const text = file.text();
-      const deck = JSON.parse(text) as StaticDeck;
-      decks.push(deck);
-    }
+    const manifest: Manifest = JSON.parse(_manifest.text());
 
-    return decks;
+    return manifest;
   }
 
   private async _digest(str: string) {
-    const digest = Rusha.createHash().update(str).digest();
+    const digest = Rusha.createHash().update(str).digest("hex").toString();
 
     return digest;
-  }
-
-  private async _getDecksUris(): Promise<string[]> {
-    const dir = new Directory(this.decksPath);
-    const files = dir.list();
-
-    const uris: string[] = [];
-
-    for (const file of files) {
-      if (file.name.endsWith(".json")) {
-        uris.push(file.uri);
-      }
-    }
-
-    return uris;
   }
 }

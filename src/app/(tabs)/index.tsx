@@ -1,23 +1,23 @@
-import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
 import { useDecksStore } from "@/src/stores/DecksStore";
-import { StaticDeck } from "@/src/types/Deck";
+import { DeckManifest } from "@/src/types/Manifest";
 import { Link, useFocusEffect } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Decks() {
-  const { decks, fetchAllDecks } = useDecksStore();
+  const { decks, fetchDecks } = useDecksStore();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchAllDecks();
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        await fetchDecks();
+      };
 
-    fetchData();
-  }, []);
+      fetchData();
+    }, []),
+  );
 
-  const renderDecks = ({ item }: { item: StaticDeck }) => {
-    const cardCount = item.cards.length;
+  const renderDecks = ({ item }: { item: DeckManifest }) => {
     return (
       <Link
         href={{
@@ -30,7 +30,7 @@ export default function Decks() {
           <Text style={styles.decksListItemTitle}>{item.name}</Text>
           <Text
             style={styles.decksListItemCardCount}
-          >{`${cardCount} card${cardCount > 1 ? "s" : ""}`}</Text>
+          >{`${item.cardAmount} card${item.cardAmount > 1 ? "s" : ""}`}</Text>
         </View>
       </Link>
     );

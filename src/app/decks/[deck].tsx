@@ -1,10 +1,9 @@
 import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
-import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
 import { useDecksStore } from "@/src/stores/DecksStore";
-import { FlashCard, StaticDeck } from "@/src/types/Deck";
-import { Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { FlashCard } from "@/src/types/Deck";
+import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function DeckPage() {
@@ -15,18 +14,20 @@ export default function DeckPage() {
   const [screenTitle, setScreenTitle] = useState<string>();
   const [cards, setCards] = useState<FlashCard[]>();
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = getDeck(deckSlug as string);
+  useFocusEffect(
+    useCallback(() => {
+      async function fetchData() {
+        const data = await getDeck(deckSlug as string);
 
-      if (data) {
-        setCards(data.cards);
-        setScreenTitle(data.name);
+        if (data) {
+          setCards(data.cards);
+          setScreenTitle(data.name);
+        }
       }
-    }
 
-    fetchData();
-  }, []);
+      fetchData();
+    }, []),
+  );
 
   const renderCards = ({ item, index }: { item: FlashCard; index: number }) => {
     return (

@@ -1,28 +1,28 @@
 import { create } from "zustand";
-import { StaticDeck } from "../types/Deck";
 import { DecksFileSystemHandler } from "../infra/filesystem/DecksFileSystemHandler";
+import { DeckManifest, Manifest } from "../types/Manifest";
+import { StaticDeck } from "../types/Deck";
 
 interface DecksState {
-  decks: StaticDeck[];
-  fetchAllDecks: () => Promise<void>;
-  getDeck: (slug: string) => StaticDeck | null;
+  decks: DeckManifest[];
+  fetchDecks: () => Promise<void>;
+  getDeck: (slug: string) => Promise<StaticDeck | null>;
 }
 
-export const useDecksStore = create<DecksState>((set, get) => ({
-  decks: [],
-  fetchAllDecks: async () => {
-    const decksFileSystemHandler = new DecksFileSystemHandler();
-    const data = await decksFileSystemHandler.getAllDecks();
+export const useDecksStore = create<DecksState>((set, get) => {
+  const decksFileSystemHandler = new DecksFileSystemHandler();
 
-    set({ decks: data });
-  },
-  getDeck: (slug: string) => {
-    const result = get().decks.filter((deck) => deck.slug === slug);
+  return {
+    decks: [],
+    fetchDecks: async () => {
+      const data = await decksFileSystemHandler.getManifest();
 
-    if (result.length === 0) {
-      return null;
-    }
+      set({ decks: data.decks });
+    },
+    getDeck: async (slug: string) => {
+      const deck = await decksFileSystemHandler.read(slug);
 
-    return result[0];
-  },
-}));
+      return deck;
+    },
+  };
+});
