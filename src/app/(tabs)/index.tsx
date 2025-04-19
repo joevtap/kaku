@@ -1,22 +1,20 @@
 import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
+import { useDecksStore } from "@/src/stores/DecksStore";
 import { StaticDeck } from "@/src/types/Deck";
 import { Link, useFocusEffect } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Decks() {
-  const [decks, setDecks] = useState<StaticDeck[]>([]);
+  const { decks, fetchAllDecks } = useDecksStore();
 
-  useFocusEffect(() => {
-    async function fetchLocalDecks() {
-      const decksFileSystemHandler = new DecksFileSystemHandler();
-      const _decks = await decksFileSystemHandler.getAllDecks();
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchAllDecks();
+    };
 
-      setDecks(_decks);
-    }
-
-    fetchLocalDecks();
-  });
+    fetchData();
+  }, []);
 
   const renderDecks = ({ item }: { item: StaticDeck }) => {
     const cardCount = item.cards.length;

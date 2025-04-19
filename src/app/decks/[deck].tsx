@@ -1,30 +1,32 @@
 import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
 import { DecksFileSystemHandler } from "@/src/infra/filesystem/DecksFileSystemHandler";
+import { useDecksStore } from "@/src/stores/DecksStore";
 import { FlashCard, StaticDeck } from "@/src/types/Deck";
-import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function DeckPage() {
   const { deck: deckSlug } = useLocalSearchParams();
 
-  const [deck, setDeck] = useState<StaticDeck>();
-  const [cards, setCards] = useState(deck?.cards ?? []);
+  const { getDeck } = useDecksStore();
 
-  useFocusEffect(() => {
-    async function fetchLocalDeck() {
-      const decksFileSystemHandler = new DecksFileSystemHandler();
-      const data = await decksFileSystemHandler.read(deckSlug as string);
+  const [screenTitle, setScreenTitle] = useState<string>();
+  const [cards, setCards] = useState<FlashCard[]>();
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = getDeck(deckSlug as string);
 
       if (data) {
-        setDeck(data);
         setCards(data.cards);
+        setScreenTitle(data.name);
       }
     }
 
-    fetchLocalDeck();
-  });
+    fetchData();
+  }, []);
 
   const renderCards = ({ item, index }: { item: FlashCard; index: number }) => {
     return (
@@ -52,7 +54,7 @@ export default function DeckPage() {
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: deck?.name ?? "Deck",
+          title: screenTitle ?? "Deck",
         }}
       />
       <FlatList
