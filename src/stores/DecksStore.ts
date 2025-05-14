@@ -5,7 +5,6 @@ import { FlashCard, StaticDeck } from "../types/Deck";
 
 interface DecksState {
   decks: DeckManifest[];
-  getDeck: (slug: string) => Promise<StaticDeck | null>;
   createDeck: (deck: StaticDeck) => Promise<void>;
   addCard: (deckSlug: string, card: Omit<FlashCard, "id">) => Promise<void>;
 }
@@ -15,11 +14,7 @@ export const useDecksStore = create<DecksState>((set, get) => {
 
   return {
     decks: [],
-    getDeck: async (slug: string) => {
-      const deck = await decksFileSystemHandler.read(slug);
 
-      return deck;
-    },
     createDeck: async (deck: StaticDeck) => {
       await decksFileSystemHandler.write(deck);
       const data = await decksFileSystemHandler.getManifest();

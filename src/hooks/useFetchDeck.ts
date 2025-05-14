@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
-import { Manifest } from "../types/Manifest";
 import { DecksFileSystemHandler } from "../infra/filesystem/DecksFileSystemHandler";
+import { StaticDeck } from "../types/Deck";
 import { useFocusEffect } from "expo-router";
 
-export function useFetchManifest() {
-  const [manifest, setManifest] = useState<Manifest>();
+export function useFetchDeck(slug: string) {
+  const [deck, setDeck] = useState<StaticDeck>();
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -14,8 +14,13 @@ export function useFetchManifest() {
     useCallback(() => {
       const fetchData = async () => {
         try {
-          const data = await decksFileSystemHandler.getManifest();
-          setManifest(data);
+          const data = await decksFileSystemHandler.read(slug);
+
+          if (!data) {
+            throw new Error("Deck not found");
+          }
+
+          setDeck(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching decks:", error);
@@ -28,5 +33,5 @@ export function useFetchManifest() {
     }, []),
   );
 
-  return [manifest, error, loading] as const;
+  return [deck, error, loading] as const;
 }

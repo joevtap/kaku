@@ -1,32 +1,27 @@
 import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
-import { useDecksStore } from "@/src/stores/DecksStore";
 import { FlashCard } from "@/src/types/Deck";
 import { Link, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { FlatList, StyleSheet, Text, View, Pressable } from "react-native";
 import { Plus } from "@icons";
+import { useFetchDeck } from "@/src/hooks/useFetchDeck";
 
 export default function DeckPage() {
   const { deck: deckSlug } = useLocalSearchParams();
-  const { getDeck } = useDecksStore();
+
+  const [deck, loading, error] = useFetchDeck(deckSlug as string);
 
   const [screenTitle, setScreenTitle] = useState<string>();
   const [cards, setCards] = useState<FlashCard[]>();
 
   useFocusEffect(
     useCallback(() => {
-      async function fetchData() {
-        const data = await getDeck(deckSlug as string);
-
-        if (data) {
-          setCards(data.cards);
-          setScreenTitle(data.name);
-        }
+      if (deck) {
+        setScreenTitle(deck.name);
+        setCards(deck.cards);
       }
-
-      fetchData();
-    }, [deckSlug, getDeck]),
+    }, [deck]),
   );
 
   const renderCards = ({ item, index }: { item: FlashCard; index: number }) => {
@@ -51,34 +46,42 @@ export default function DeckPage() {
     );
   };
 
-  return (
-    <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: screenTitle ?? "Deck",
-        }}
-      />
-      <FlatList
-        data={cards}
-        renderItem={renderCards}
-        style={styles.cardsList}
-        ItemSeparatorComponent={Separator}
-      />
-      <Link
-        href={{
-          pathname: "/cards/create",
-          params: { deck: deckSlug },
-        }}
-        asChild
-      >
-        {(deckSlug as string) !== "yojijukugo" && (
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!error && deck && cards) {
+    return (
+      <View style={styles.container}>
+        <Stack.Screen
+          options={{
+            title: screenTitle ?? "Deck",
+          }}
+        />
+        <FlatList
+          data={cards}
+          renderItem={renderCards}
+          style={styles.cardsList}
+          ItemSeparatorComponent={Separator}
+        />
+        <Link
+          href={{
+            pathname: "/cards/create",
+            params: { deck: deckSlug },
+          }}
+          asChild
+        >
           <Pressable style={styles.fab}>
             <Plus size={24} color="#fff" />
           </Pressable>
-        )}
-      </Link>
-    </View>
-  );
+        </Link>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
