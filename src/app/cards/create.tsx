@@ -71,7 +71,7 @@ export default function CreateCardPage() {
     });
 
     dispatch({ type: "RESET" });
-    router.replace("/");
+    router.back();
   };
 
   return (

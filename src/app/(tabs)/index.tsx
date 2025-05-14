@@ -1,22 +1,11 @@
-import { useDecksStore } from "@/src/stores/DecksStore";
+import { useFetchManifest } from "@/src/hooks/useFetchManifest";
 import { DeckManifest } from "@/src/types/Manifest";
 import { Plus } from "@icons";
-import { Link, useFocusEffect } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { Link } from "expo-router";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Decks() {
-  const { decks, fetchDecks } = useDecksStore();
-
-  useFocusEffect(
-    useCallback(() => {
-      const fetchData = async () => {
-        await fetchDecks();
-      };
-
-      fetchData();
-    }, []),
-  );
+  const [manifest, error, loading] = useFetchManifest();
 
   const renderDecks = ({ item }: { item: DeckManifest }) => {
     return (
@@ -37,20 +26,30 @@ export default function Decks() {
     );
   };
 
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={decks}
-        renderItem={renderDecks}
-        style={styles.decksList}
-      />
-      <Link href="/decks/create" asChild>
-        <Pressable style={styles.fab}>
-          <Plus size={24} color="#fff" />
-        </Pressable>
-      </Link>
-    </View>
-  );
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!error && manifest) {
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={manifest.decks}
+          renderItem={renderDecks}
+          style={styles.decksList}
+        />
+        <Link href="/decks/create" asChild>
+          <Pressable style={styles.fab}>
+            <Plus size={24} color="#fff" />
+          </Pressable>
+        </Link>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#000", // ou colors.fg, por exemplo
+    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
     elevation: 4,
