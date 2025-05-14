@@ -10,23 +10,23 @@ export function useFetchManifest() {
 
   const decksFileSystemHandler = new DecksFileSystemHandler();
 
+  const fetchData = async () => {
+    try {
+      const data = await decksFileSystemHandler.getManifest();
+      setManifest(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching decks:", error);
+      setError(error as Error);
+      setLoading(false);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      const fetchData = async () => {
-        try {
-          const data = await decksFileSystemHandler.getManifest();
-          setManifest(data);
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching decks:", error);
-          setError(error as Error);
-          setLoading(false);
-        }
-      };
-
       fetchData();
     }, []),
   );
 
-  return [manifest, error, loading] as const;
+  return [manifest, error, loading, fetchData] as const;
 }

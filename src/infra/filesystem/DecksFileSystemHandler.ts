@@ -138,6 +138,30 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     );
   }
 
+  public async deleteDeck(slug: string): Promise<void> {
+    const file = new File(Paths.join(this.decksPath, `${slug}.json`));
+    const manifest = new File(Paths.join(Paths.document, "manifest.json"));
+    const manifestData = JSON.parse(manifest.text()) as Manifest;
+    const deckIndex = manifestData.decks.findIndex((d) => d.slug === slug);
+    if (deckIndex !== -1) {
+      manifestData.decks.splice(deckIndex, 1);
+      manifest.write(JSON.stringify(manifestData));
+      console.log(
+        `[DecksFileSystemHandler] Deck "${slug}" removido com sucesso.`,
+      );
+    } else {
+      console.log(`[DecksFileSystemHandler] Deck "${slug}" não encontrado.`);
+    }
+    if (file.exists) {
+      file.delete();
+      console.log(`[DecksFileSystemHandler] Arquivo "${slug}.json" removido.`);
+    } else {
+      console.log(
+        `[DecksFileSystemHandler] Arquivo "${slug}.json" não encontrado.`,
+      );
+    }
+  }
+
   public async addCard(slug: string, card: Omit<FlashCard, "id">) {
     const deck = (await this.getManifest()).decks.find(
       (deck) => deck.slug === slug,
