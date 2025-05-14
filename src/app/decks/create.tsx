@@ -5,13 +5,10 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Pressable,
   Alert,
   TouchableOpacity,
 } from "react-native";
 import { colors } from "@/src/constants/colors";
-import { useDecksStore } from "@/src/stores/DecksStore";
-import { StaticDeck } from "@/src/types/Deck";
 
 type FormState = {
   name: string;
@@ -43,7 +40,6 @@ const formReducer = (state: FormState, action: FormAction) => {
 
 export default function CreateDeckPage() {
   const router = useRouter();
-  const { createDeck } = useDecksStore();
 
   const [formState, dispatch] = useReducer(formReducer, INIT_FORM_STATE);
   const { name, description } = formState;
@@ -54,15 +50,6 @@ export default function CreateDeckPage() {
       return;
     }
 
-    const newDeck: StaticDeck = {
-      slug: name.toLowerCase().replace(/\s+/g, "-"),
-      version: "1.0",
-      name,
-      description,
-      cards: [],
-    };
-
-    await createDeck(newDeck);
     dispatch({ type: "RESET" });
     router.replace("/");
   };
