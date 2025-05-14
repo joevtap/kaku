@@ -2,6 +2,7 @@ import { FlashCard, FlashCardId, StaticDeck } from "@/src/types/Deck";
 import { Manifest } from "@/src/types/Manifest";
 import { Directory, File, Paths } from "expo-file-system/next";
 import Rusha from "rusha";
+import uuid from "react-native-uuid";
 
 export interface IFileSystemHandler {
   bootstrap(): Promise<void>;
@@ -172,7 +173,7 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
 
     const newCard: FlashCard = {
-      id: deck.cardAmount + 1,
+      id: uuid.v4(),
       front: card.front,
       back: card.back,
     };
