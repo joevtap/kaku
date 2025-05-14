@@ -7,6 +7,7 @@ interface DecksState {
   decks: DeckManifest[];
   fetchDecks: () => Promise<void>;
   getDeck: (slug: string) => Promise<StaticDeck | null>;
+  createDeck: (deck: StaticDeck) => Promise<void>;
 }
 
 export const useDecksStore = create<DecksState>((set, get) => {
@@ -23,6 +24,11 @@ export const useDecksStore = create<DecksState>((set, get) => {
       const deck = await decksFileSystemHandler.read(slug);
 
       return deck;
+    },
+    createDeck: async (deck: StaticDeck) => {
+      await decksFileSystemHandler.write(deck);
+      const data = await decksFileSystemHandler.getManifest();
+      set({ decks: data.decks });
     },
   };
 });

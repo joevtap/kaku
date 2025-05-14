@@ -13,4 +13,8 @@ const Home = (props: IconProps) => (
   <MaterialCommunityIcons name="home" size={props.size} color={props.color} />
 );
 
-export { Cards, Home };
+const Plus = (props: IconProps) => (
+  <MaterialCommunityIcons name="plus" size={props.size} color={props.color} />
+);
+
+export { Cards, Home, Plus };

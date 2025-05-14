@@ -102,6 +102,38 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     return manifest;
   }
 
+  public async write(deck: StaticDeck): Promise<void> {
+    const file = new File(Paths.join(this.decksPath, `${deck.slug}.json`));
+    const manifest = new File(Paths.join(Paths.document, "manifest.json"));
+
+    if (!file.exists) file.create();
+    file.write(JSON.stringify(deck));
+
+    if (!manifest.exists) manifest.create();
+
+    const manifestData = manifest.exists
+      ? (JSON.parse(manifest.text()) as Manifest)
+      : { decks: [] };
+
+    const existingIndex = manifestData.decks.findIndex(d => d.slug === deck.slug);
+
+    const manifestEntry = {
+      name: deck.name,
+      slug: deck.slug,
+      description: deck.description,
+      cardAmount: deck.cards.length,
+    };
+
+    if (existingIndex !== -1) {
+      manifestData.decks[existingIndex] = manifestEntry;
+    } else {
+      manifestData.decks.push(manifestEntry);
+    }
+
+    manifest.write(JSON.stringify(manifestData));
+    console.log(`[DecksFileSystemHandler] Deck "${deck.name}" salvo com sucesso.`);
+  }
+
   private async _digest(str: string) {
     const digest = Rusha.createHash().update(str).digest("hex").toString();
 
