@@ -1,4 +1,4 @@
-import { StaticDeck } from "@/src/types/Deck";
+import { FlashCard, StaticDeck } from "@/src/types/Deck";
 import { Manifest } from "@/src/types/Manifest";
 import { Directory, File, Paths } from "expo-file-system/next";
 import Rusha from "rusha";
@@ -115,7 +115,9 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
       ? (JSON.parse(manifest.text()) as Manifest)
       : { decks: [] };
 
-    const existingIndex = manifestData.decks.findIndex(d => d.slug === deck.slug);
+    const existingIndex = manifestData.decks.findIndex(
+      (d) => d.slug === deck.slug,
+    );
 
     const manifestEntry = {
       name: deck.name,
@@ -131,7 +133,40 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
 
     manifest.write(JSON.stringify(manifestData));
-    console.log(`[DecksFileSystemHandler] Deck "${deck.name}" salvo com sucesso.`);
+    console.log(
+      `[DecksFileSystemHandler] Deck "${deck.name}" salvo com sucesso.`,
+    );
+  }
+
+  public async addCard(slug: string, card: Omit<FlashCard, "id">) {
+    const deck = (await this.getManifest()).decks.find(
+      (deck) => deck.slug === slug,
+    );
+
+    if (!deck) {
+      throw new Error(`Deck "${slug}" não encontrado.`);
+    }
+
+    const newCard: FlashCard = {
+      id: deck.cardAmount + 1,
+      front: card.front,
+      back: card.back,
+    };
+
+    const deckFile = new File(Paths.join(this.decksPath, `${slug}.json`));
+    const deckData = JSON.parse(deckFile.text()) as StaticDeck;
+    deckData.cards.push(newCard);
+
+    deckFile.write(JSON.stringify(deckData));
+
+    const manifest = new File(Paths.join(Paths.document, "manifest.json"));
+    const manifestData = JSON.parse(manifest.text()) as Manifest;
+    const deckIndex = manifestData.decks.findIndex((d) => d.slug === slug);
+    if (deckIndex !== -1) {
+      manifestData.decks[deckIndex].cardAmount = deckData.cards.length;
+    }
+    manifest.write(JSON.stringify(manifestData));
+    console.log(`[DecksFileSystemHandler] Card added to deck "${deck.name}".`);
   }
 
   private async _digest(str: string) {

@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  Pressable,
   Alert,
   TouchableOpacity,
 } from "react-native";
@@ -63,7 +64,7 @@ export default function CreateDeckPage() {
 
     await createDeck(newDeck);
     dispatch({ type: "RESET" });
-    router.navigate("/");
+    router.replace("/");
   };
 
   return (
