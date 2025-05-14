@@ -2,22 +2,9 @@ import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
 import { useDecksStore } from "@/src/stores/DecksStore";
 import { FlashCard } from "@/src/types/Deck";
-import { Feather } from "@expo/vector-icons";
 import { Link, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Modal,
-  TextInput,
-  Button,
-  Image,
-  Pressable,
-} from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { FlatList, StyleSheet, Text, View, Pressable } from "react-native";
 import { Plus } from "@icons";
 
 export default function DeckPage() {
@@ -26,14 +13,6 @@ export default function DeckPage() {
 
   const [screenTitle, setScreenTitle] = useState<string>();
   const [cards, setCards] = useState<FlashCard[]>();
-
-  // Modal state for new card
-  const [modalVisible, setModalVisible] = useState(false);
-  const [linguagemPergunta, setLinguagemPergunta] = useState("jp");
-  const [linguagemResposta, setLinguagemResposta] = useState("latin");
-  const [pergunta, setPergunta] = useState("");
-  const [resposta, setResposta] = useState("");
-  const [imagem, setImagem] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -85,7 +64,13 @@ export default function DeckPage() {
         style={styles.cardsList}
         ItemSeparatorComponent={Separator}
       />
-      <Link href="/cards/create" asChild>
+      <Link
+        href={{
+          pathname: "/cards/create",
+          params: { deck: deckSlug },
+        }}
+        asChild
+      >
         <Pressable style={styles.fab}>
           <Plus size={24} color="#fff" />
         </Pressable>

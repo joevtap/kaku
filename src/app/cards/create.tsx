@@ -1,5 +1,5 @@
-import { Stack, useRouter } from "expo-router";
-import { useReducer } from "react";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useReducer } from "react";
 import {
   View,
   Text,
@@ -7,41 +7,41 @@ import {
   StyleSheet,
   Pressable,
   Alert,
+  ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { colors } from "@/src/constants/colors";
+import { FlashCardBack, FlashCardFront } from "@/src/types/Deck";
 
 type FormState = {
-  question: string;
-  answer: string;
-  writingSystemQuestion: "jp" | "latin";
-  writingSystemAnswer: "jp" | "latin";
+  front: FlashCardFront;
+  back: FlashCardBack;
 };
 
 const INIT_FORM_STATE: FormState = {
-  question: "",
-  answer: "",
-  writingSystemQuestion: "latin",
-  writingSystemAnswer: "latin",
+  front: {
+    type: "text",
+    content: "",
+    writingSystem: "latin",
+  },
+  back: {
+    type: "text",
+    content: "",
+    writingSystem: "latin",
+  },
 };
 
 type FormAction =
-  | { type: "SET_QUESTION"; payload: string }
-  | { type: "SET_ANSWER"; payload: string }
-  | { type: "SET_WRITING_SYSTEM_QUESTION"; payload: "jp" | "latin" }
-  | { type: "SET_WRITING_SYSTEM_ANSWER"; payload: "jp" | "latin" }
+  | { type: "SET_FRONT"; payload: FlashCardFront }
+  | { type: "SET_BACK"; payload: FlashCardBack }
   | { type: "RESET" };
 
 const formReducer = (state: FormState, action: FormAction) => {
   switch (action.type) {
-    case "SET_QUESTION":
-      return { ...state, question: action.payload };
-    case "SET_ANSWER":
-      return { ...state, answer: action.payload };
-    case "SET_WRITING_SYSTEM_QUESTION":
-      return { ...state, writingSystemQuestion: action.payload };
-    case "SET_WRITING_SYSTEM_ANSWER":
-      return { ...state, writingSystemAnswer: action.payload };
+    case "SET_FRONT":
+      return { ...state, front: action.payload };
+    case "SET_BACK":
+      return { ...state, back: action.payload };
     case "RESET":
       return INIT_FORM_STATE;
     default:
@@ -51,29 +51,40 @@ const formReducer = (state: FormState, action: FormAction) => {
 
 export default function CreateCardPage() {
   const router = useRouter();
+  const { deck } = useLocalSearchParams();
 
   const [formState, dispatch] = useReducer(formReducer, INIT_FORM_STATE);
-  const { question, answer, writingSystemQuestion, writingSystemAnswer } =
-    formState;
+  const { front, back } = formState;
 
   const handleSubmit = async () => {
-    if (!question.trim() || !answer.trim()) {
+    if (!front.content.trim() || !back.content.trim()) {
       Alert.alert("Erro", "Por favor, preencha todos os campos.");
       return;
     }
+
+    console.log({
+      form: formState,
+      deck,
+    });
 
     router.navigate("/");
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Stack.Screen options={{ title: "Criar Card" }} />
 
       <Text style={styles.label}>Sistema de escrita da pergunta</Text>
       <Picker
-        selectedValue={writingSystemQuestion}
+        selectedValue={front.writingSystem}
         onValueChange={(t) => {
-          dispatch({ type: "SET_WRITING_SYSTEM_QUESTION", payload: t });
+          dispatch({
+            type: "SET_FRONT",
+            payload: {
+              ...front,
+              writingSystem: t,
+            },
+          });
         }}
         style={styles.input}
       >
@@ -85,17 +96,26 @@ export default function CreateCardPage() {
       <TextInput
         style={styles.input}
         placeholder="Digite a pergunta"
-        value={question}
+        value={front.content}
         onChangeText={(t) => {
-          dispatch({ type: "SET_QUESTION", payload: t });
+          dispatch({
+            type: "SET_FRONT",
+            payload: {
+              ...front,
+              content: t,
+            },
+          });
         }}
       />
 
       <Text style={styles.label}>Sistema de escrita da resposta</Text>
       <Picker
-        selectedValue={writingSystemAnswer}
+        selectedValue={back.writingSystem}
         onValueChange={(t) => {
-          dispatch({ type: "SET_WRITING_SYSTEM_ANSWER", payload: t });
+          dispatch({
+            type: "SET_BACK",
+            payload: { ...back, writingSystem: t },
+          });
         }}
         style={styles.input}
       >
@@ -107,16 +127,22 @@ export default function CreateCardPage() {
       <TextInput
         style={styles.input}
         placeholder="Digite a resposta"
-        value={answer}
+        value={back.content}
         onChangeText={(t) => {
-          dispatch({ type: "SET_ANSWER", payload: t });
+          dispatch({
+            type: "SET_BACK",
+            payload: {
+              ...back,
+              content: t,
+            },
+          });
         }}
       />
 
       <Pressable style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Criar</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
