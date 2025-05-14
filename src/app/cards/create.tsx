@@ -64,7 +64,7 @@ export default function CreateCardPage() {
       return;
     }
 
-    createCard(deck as string, {
+    await createCard(deck as string, {
       front: [front],
       back: [back],
     });

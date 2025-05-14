@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { colors } from "@/src/constants/colors";
+import { useCreateDeck } from "@/src/hooks/useCreateDeck";
 
 type FormState = {
   name: string;
@@ -44,11 +45,18 @@ export default function CreateDeckPage() {
   const [formState, dispatch] = useReducer(formReducer, INIT_FORM_STATE);
   const { name, description } = formState;
 
+  const { createDeck } = useCreateDeck();
+
   const handleSubmit = async () => {
     if (!name.trim() || !description.trim()) {
       Alert.alert("Erro", "Por favor, preencha todos os campos.");
       return;
     }
+
+    await createDeck({
+      name,
+      description,
+    });
 
     dispatch({ type: "RESET" });
     router.replace("/");
