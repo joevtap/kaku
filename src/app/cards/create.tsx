@@ -1,7 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import {
-  View,
   Text,
   TextInput,
   StyleSheet,
@@ -12,7 +11,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { colors } from "@/src/constants/colors";
 import { FlashCardBack, FlashCardFront } from "@/src/types/Deck";
-import { useDecksStore } from "@/src/stores/DecksStore";
+import { useCreateCard } from "@/src/hooks/useCreateCard";
 
 type FormState = {
   front: FlashCardFront;
@@ -54,7 +53,7 @@ export default function CreateCardPage() {
   const router = useRouter();
   const { deck } = useLocalSearchParams();
 
-  const { addCard } = useDecksStore();
+  const { createCard } = useCreateCard();
 
   const [formState, dispatch] = useReducer(formReducer, INIT_FORM_STATE);
   const { front, back } = formState;
@@ -65,7 +64,7 @@ export default function CreateCardPage() {
       return;
     }
 
-    addCard(deck as string, {
+    createCard(deck as string, {
       front: [front],
       back: [back],
     });
