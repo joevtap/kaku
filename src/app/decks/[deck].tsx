@@ -71,9 +71,11 @@ export default function DeckPage() {
         }}
         asChild
       >
-        <Pressable style={styles.fab}>
-          <Plus size={24} color="#fff" />
-        </Pressable>
+        {(deckSlug as string) !== "yojijukugo" && (
+          <Pressable style={styles.fab}>
+            <Plus size={24} color="#fff" />
+          </Pressable>
+        )}
       </Link>
     </View>
   );
