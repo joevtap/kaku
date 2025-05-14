@@ -1,5 +1,5 @@
 import { Stack, useRouter } from "expo-router";
-import { useState } from "react";
+import { useReducer } from "react";
 import {
   View,
   Text,
@@ -7,110 +7,111 @@ import {
   StyleSheet,
   Pressable,
   Alert,
-  Image,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { colors } from "@/src/constants/colors";
-import * as ImagePicker from "expo-image-picker";
+
+type FormState = {
+  question: string;
+  answer: string;
+  writingSystemQuestion: "jp" | "latin";
+  writingSystemAnswer: "jp" | "latin";
+};
+
+const INIT_FORM_STATE: FormState = {
+  question: "",
+  answer: "",
+  writingSystemQuestion: "latin",
+  writingSystemAnswer: "latin",
+};
+
+type FormAction =
+  | { type: "SET_QUESTION"; payload: string }
+  | { type: "SET_ANSWER"; payload: string }
+  | { type: "SET_WRITING_SYSTEM_QUESTION"; payload: "jp" | "latin" }
+  | { type: "SET_WRITING_SYSTEM_ANSWER"; payload: "jp" | "latin" }
+  | { type: "RESET" };
+
+const formReducer = (state: FormState, action: FormAction) => {
+  switch (action.type) {
+    case "SET_QUESTION":
+      return { ...state, question: action.payload };
+    case "SET_ANSWER":
+      return { ...state, answer: action.payload };
+    case "SET_WRITING_SYSTEM_QUESTION":
+      return { ...state, writingSystemQuestion: action.payload };
+    case "SET_WRITING_SYSTEM_ANSWER":
+      return { ...state, writingSystemAnswer: action.payload };
+    case "RESET":
+      return INIT_FORM_STATE;
+    default:
+      return state;
+  }
+};
 
 export default function CreateCardPage() {
   const router = useRouter();
 
-  const [linguagemPergunta, setLinguagemPergunta] = useState<"jp" | "latin">(
-    "jp",
-  );
-  const [linguagemResposta, setLinguagemResposta] = useState<"jp" | "latin">(
-    "latin",
-  );
-  const [pergunta, setPergunta] = useState("");
-  const [resposta, setResposta] = useState("");
-  const [imagem, setImagem] = useState<string>("");
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImagem(result.assets[0].uri);
-    }
-  };
+  const [formState, dispatch] = useReducer(formReducer, INIT_FORM_STATE);
+  const { question, answer, writingSystemQuestion, writingSystemAnswer } =
+    formState;
 
   const handleSubmit = async () => {
-    if (!pergunta.trim()) return;
-    if (!resposta.trim()) return;
+    if (!question.trim() || !answer.trim()) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos.");
+      return;
+    }
 
-    console.log("pergunta", pergunta);
-    console.log("resposta", resposta);
-    console.log("imagem", imagem);
-    console.log("linguagemPergunta", linguagemPergunta);
-    console.log("linguagemResposta", linguagemResposta);
-
-    router.replace("/");
+    router.navigate("/");
   };
 
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: "Criar Card" }} />
 
-      <Text style={styles.label}>Linguagem da Pergunta</Text>
+      <Text style={styles.label}>Sistema de escrita da pergunta</Text>
       <Picker
-        selectedValue={linguagemPergunta}
-        onValueChange={setLinguagemPergunta}
+        selectedValue={writingSystemQuestion}
+        onValueChange={(t) => {
+          dispatch({ type: "SET_WRITING_SYSTEM_QUESTION", payload: t });
+        }}
         style={styles.input}
       >
         <Picker.Item label="Japonês" value="jp" />
-        <Picker.Item label="Latim" value="latin" />
+        <Picker.Item label="Latim/Romano" value="latin" />
       </Picker>
 
       <Text style={styles.label}>Pergunta</Text>
       <TextInput
         style={styles.input}
         placeholder="Digite a pergunta"
-        value={pergunta}
-        onChangeText={setPergunta}
+        value={question}
+        onChangeText={(t) => {
+          dispatch({ type: "SET_QUESTION", payload: t });
+        }}
       />
 
-      <Text style={styles.label}>Linguagem da Resposta</Text>
+      <Text style={styles.label}>Sistema de escrita da resposta</Text>
       <Picker
-        selectedValue={linguagemResposta}
-        onValueChange={setLinguagemResposta}
+        selectedValue={writingSystemAnswer}
+        onValueChange={(t) => {
+          dispatch({ type: "SET_WRITING_SYSTEM_ANSWER", payload: t });
+        }}
         style={styles.input}
       >
         <Picker.Item label="Japonês" value="jp" />
-        <Picker.Item label="Latim" value="latin" />
+        <Picker.Item label="Latim/Romano" value="latin" />
       </Picker>
 
       <Text style={styles.label}>Resposta</Text>
       <TextInput
         style={styles.input}
         placeholder="Digite a resposta"
-        value={resposta}
-        onChangeText={setResposta}
+        value={answer}
+        onChangeText={(t) => {
+          dispatch({ type: "SET_ANSWER", payload: t });
+        }}
       />
-
-      <Text style={styles.label}>Imagem (opcional)</Text>
-      <Pressable
-        style={[
-          styles.input,
-          { justifyContent: "center", alignItems: "center" },
-        ]}
-        onPress={pickImage}
-      >
-        <Text>{imagem ? "Alterar imagem" : "Selecionar imagem"}</Text>
-      </Pressable>
-      {imagem ? (
-        <Image
-          source={{ uri: imagem }}
-          style={{
-            width: 100,
-            height: 100,
-            marginVertical: 8,
-            alignSelf: "center",
-          }}
-        />
-      ) : null}
 
       <Pressable style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Criar</Text>
