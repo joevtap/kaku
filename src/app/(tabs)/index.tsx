@@ -1,8 +1,9 @@
 import { useDecksStore } from "@/src/stores/DecksStore";
 import { DeckManifest } from "@/src/types/Manifest";
+import { Plus } from "@icons";
 import { Link, useFocusEffect } from "expo-router";
 import { useCallback, useEffect } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Decks() {
   const { decks, fetchDecks } = useDecksStore();
@@ -43,6 +44,11 @@ export default function Decks() {
         renderItem={renderDecks}
         style={styles.decksList}
       />
+      <Link href="/decks/create" asChild>
+        <Pressable style={styles.fab}>
+          <Plus size={24} color="#fff" />
+        </Pressable>
+      </Link>
     </View>
   );
 }
@@ -64,5 +70,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
     fontFamily: "Lato-Regular",
+  },
+  fab: {
+    position: "absolute",
+    bottom: 32,
+    right: 32,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "#000", // ou colors.fg, por exemplo
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 4,
   },
 });
