@@ -1,16 +1,18 @@
 import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
-import { FlashCard } from "@/src/types/Deck";
+import { FlashCard, FlashCardId } from "@/src/types/Deck";
 import { Link, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { FlatList, StyleSheet, Text, View, Pressable } from "react-native";
-import { Plus } from "@icons";
+import { Plus, Trash } from "@icons";
 import { useFetchDeck } from "@/src/hooks/useFetchDeck";
+import { useDeleteCard } from "@/src/hooks/useDeleteCard";
 
 export default function DeckPage() {
   const { deck: deckSlug } = useLocalSearchParams();
 
-  const [deck, loading, error] = useFetchDeck(deckSlug as string);
+  const [deck, loading, error, refetch] = useFetchDeck(deckSlug as string);
+  const { deleteCard } = useDeleteCard();
 
   const [screenTitle, setScreenTitle] = useState<string>();
   const [cards, setCards] = useState<FlashCard[]>();
@@ -24,24 +26,38 @@ export default function DeckPage() {
     }, [deck]),
   );
 
+  const handleDeleteCard = async (id: FlashCardId) => {
+    await deleteCard(deckSlug as string, id);
+    await refetch();
+  };
+
   const renderCards = ({ item, index }: { item: FlashCard; index: number }) => {
     return (
       <View style={styles.cardsListItem}>
-        <Text style={styles.cardsListItemId}>{index + 1}</Text>
-        <View style={{ gap: 4 }}>
-          {item.front.map((front, idx) => {
-            if (idx <= 1) {
-              return (
-                <Text
-                  style={getTextStyle(front.writingSystem, idx)}
-                  key={front.content}
-                >
-                  {front.content}
-                </Text>
-              );
-            }
-          })}
+        <View style={styles.cardListItemLeft}>
+          <Text style={styles.cardsListItemId}>{index + 1}</Text>
+          <View style={{ gap: 4 }}>
+            {item.front.map((front, idx) => {
+              if (idx <= 1) {
+                return (
+                  <Text
+                    style={getTextStyle(front.writingSystem, idx)}
+                    key={front.content}
+                  >
+                    {front.content}
+                  </Text>
+                );
+              }
+            })}
+          </View>
         </View>
+        <Pressable
+          onPress={() => {
+            handleDeleteCard(item.id);
+          }}
+        >
+          <Trash size={24} color="#000" />
+        </Pressable>
       </View>
     );
   };
@@ -94,6 +110,11 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: colors.fg,
   },
+  cardListItemLeft: {
+    gap: 16,
+    flexDirection: "row",
+    alignItems: "center",
+  },
   cardsList: {
     width: "100%",
     paddingHorizontal: 16,
@@ -103,6 +124,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   separator: {
     height: 1,

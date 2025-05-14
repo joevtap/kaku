@@ -1,4 +1,4 @@
-import { FlashCard, StaticDeck } from "@/src/types/Deck";
+import { FlashCard, FlashCardId, StaticDeck } from "@/src/types/Deck";
 import { Manifest } from "@/src/types/Manifest";
 import { Directory, File, Paths } from "expo-file-system/next";
 import Rusha from "rusha";
@@ -191,6 +191,33 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
     manifest.write(JSON.stringify(manifestData));
     console.log(`[DecksFileSystemHandler] Card added to deck "${deck.name}".`);
+  }
+
+  public async deleteCard(slug: string, id: FlashCardId) {
+    const deckFile = new File(Paths.join(this.decksPath, `${slug}.json`));
+    const deckData = JSON.parse(deckFile.text()) as StaticDeck;
+
+    const cardIndex = deckData.cards.findIndex((card) => card.id === id);
+
+    if (cardIndex !== -1) {
+      deckData.cards.splice(cardIndex, 1);
+      deckFile.write(JSON.stringify(deckData));
+
+      const manifest = new File(Paths.join(Paths.document, "manifest.json"));
+      const manifestData = JSON.parse(manifest.text()) as Manifest;
+      const deckIndex = manifestData.decks.findIndex((d) => d.slug === slug);
+      if (deckIndex !== -1) {
+        manifestData.decks[deckIndex].cardAmount = deckData.cards.length;
+      }
+      manifest.write(JSON.stringify(manifestData));
+      console.log(
+        `[DecksFileSystemHandler] Card with id "${id}" removed from deck "${slug}".`,
+      );
+    } else {
+      console.log(
+        `[DecksFileSystemHandler] Card with id "${id}" not found in deck "${slug}".`,
+      );
+    }
   }
 
   private async _digest(str: string) {

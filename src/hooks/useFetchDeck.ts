@@ -10,28 +10,28 @@ export function useFetchDeck(slug: string) {
 
   const decksFileSystemHandler = new DecksFileSystemHandler();
 
+  const fetchData = async () => {
+    try {
+      const data = await decksFileSystemHandler.read(slug);
+
+      if (!data) {
+        throw new Error("Deck not found");
+      }
+
+      setDeck(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching decks:", error);
+      setError(error as Error);
+      setLoading(false);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      const fetchData = async () => {
-        try {
-          const data = await decksFileSystemHandler.read(slug);
-
-          if (!data) {
-            throw new Error("Deck not found");
-          }
-
-          setDeck(data);
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching decks:", error);
-          setError(error as Error);
-          setLoading(false);
-        }
-      };
-
       fetchData();
     }, []),
   );
 
-  return [deck, error, loading] as const;
+  return [deck, error, loading, fetchData] as const;
 }
