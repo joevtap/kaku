@@ -68,17 +68,19 @@ export default function DeckPage() {
           style={styles.cardsList}
           ItemSeparatorComponent={Separator}
         />
-        <Link
-          href={{
-            pathname: "/cards/create",
-            params: { deck: deckSlug },
-          }}
-          asChild
-        >
-          <Pressable style={styles.fab}>
-            <Plus size={24} color="#fff" />
-          </Pressable>
-        </Link>
+        {(deckSlug as string) !== "yojijukugo" && (
+          <Link
+            href={{
+              pathname: "/cards/create",
+              params: { deck: deckSlug },
+            }}
+            asChild
+          >
+            <Pressable style={styles.fab}>
+              <Plus size={24} color="#fff" />
+            </Pressable>
+          </Link>
+        )}
       </View>
     );
   }
