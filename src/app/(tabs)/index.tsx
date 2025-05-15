@@ -4,6 +4,7 @@ import { DeckManifest } from "@/src/types/Manifest";
 import { Plus, Trash } from "@icons";
 import { Link } from "expo-router";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { colors } from "@/src/constants/colors";
 
 export default function Decks() {
   const [manifest, error, loading, refetch] = useFetchManifest();
@@ -14,7 +15,13 @@ export default function Decks() {
     await refetch();
   };
 
-  const renderDecks = ({ item }: { item: DeckManifest }) => {
+  const renderDecks = ({
+    item,
+    index,
+  }: {
+    item: DeckManifest;
+    index: number;
+  }) => {
     return (
       <Link
         href={{
@@ -24,13 +31,21 @@ export default function Decks() {
         key={item.slug}
       >
         <View style={styles.decksListItem}>
-          <View style={styles.deckListItemName}>
-            <Text style={styles.decksListItemTitle}>{item.name}</Text>
-            <Text
-              style={styles.decksListItemCardCount}
-            >{`${item.cardAmount} card${item.cardAmount > 1 ? "s" : ""}`}</Text>
+          <View style={styles.deckListItemLeft}>
+            <Text style={styles.decksListItemId}>{index + 1}</Text>
+            <View style={{ gap: 4 }}>
+              <Text style={styles.decksListItemTitle}>{item.name}</Text>
+              <Text
+                style={styles.decksListItemCardCount}
+              >{`${item.cardAmount} card${item.cardAmount > 1 ? "s" : ""}`}</Text>
+            </View>
           </View>
-          <Pressable onPress={() => handleDeleteDeck(item.slug)}>
+          <Pressable
+            onPress={(e) => {
+              e.preventDefault();
+              handleDeleteDeck(item.slug);
+            }}
+          >
             <Trash size={24} color="#000" />
           </Pressable>
         </View>
@@ -53,6 +68,7 @@ export default function Decks() {
           data={manifest.decks}
           renderItem={renderDecks}
           style={styles.decksList}
+          ItemSeparatorComponent={Separator}
         />
         <Link href="/decks/create" asChild>
           <Pressable style={styles.fab}>
@@ -65,28 +81,46 @@ export default function Decks() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, gap: 16 },
+  container: { flex: 1, gap: 16 },
   decksList: {
     width: "100%",
+    paddingHorizontal: 16,
   },
   decksListItem: {
+    gap: 16,
+    paddingVertical: 16,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
   },
-  deckListItemName: {
-    gap: 4,
+  deckListItemLeft: {
+    gap: 16,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  decksListItemId: {
+    fontFamily: "Lato-Regular",
+    fontSize: 12,
+    lineHeight: 16,
+    color: colors.fg,
   },
   decksListItemTitle: {
+    fontFamily: "Lato-Regular",
     fontSize: 18,
     lineHeight: 24,
-    fontFamily: "Lato-Regular",
+    color: colors.fg,
   },
   decksListItemCardCount: {
-    fontSize: 14,
-    lineHeight: 16,
     fontFamily: "Lato-Regular",
+    fontSize: 14,
+    lineHeight: 18,
+    color: colors.fg,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#ddd",
+    width: "100%",
   },
   fab: {
     position: "absolute",
@@ -95,9 +129,13 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#000",
+    backgroundColor: colors.fg,
     justifyContent: "center",
     alignItems: "center",
     elevation: 4,
   },
 });
+
+function Separator() {
+  return <View style={styles.separator} />;
+}
