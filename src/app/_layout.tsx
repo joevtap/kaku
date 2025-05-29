@@ -1,6 +1,8 @@
 import { Stack } from "expo-router/stack";
 import { DecksFileSystemHandler } from "../infra/filesystem/DecksFileSystemHandler";
 import { useEffect } from "react";
+import Toast from "react-native-toast-message";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function Layout() {
   useEffect(() => {
@@ -12,8 +14,11 @@ export default function Layout() {
   }, []);
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <SafeAreaProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+      <Toast />
+    </SafeAreaProvider>
   );
 }
