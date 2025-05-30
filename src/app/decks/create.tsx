@@ -1,99 +1,21 @@
 import { Stack, useRouter } from "expo-router";
-import { useReducer } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
-import { colors } from "@/src/constants/colors";
+import { View, StyleSheet } from "react-native";
+import { DeckForm } from "@/src/components/Deck/DeckForm";
 import { useCreateDeck } from "@/src/hooks/useCreateDeck";
-
-type FormState = {
-  name: string;
-  description: string;
-};
-
-const INIT_FORM_STATE: FormState = {
-  name: "",
-  description: "",
-};
-
-type FormAction =
-  | { type: "SET_NAME"; payload: string }
-  | { type: "SET_DESCRIPTION"; payload: string }
-  | { type: "RESET" };
-
-const formReducer = (state: FormState, action: FormAction) => {
-  switch (action.type) {
-    case "SET_NAME":
-      return { ...state, name: action.payload };
-    case "SET_DESCRIPTION":
-      return { ...state, description: action.payload };
-    case "RESET":
-      return INIT_FORM_STATE;
-    default:
-      return state;
-  }
-};
 
 export default function CreateDeckPage() {
   const router = useRouter();
-
-  const [formState, dispatch] = useReducer(formReducer, INIT_FORM_STATE);
-  const { name, description } = formState;
-
   const { createDeck } = useCreateDeck();
 
-  const handleSubmit = async () => {
-    if (!name.trim() || !description.trim()) {
-      Alert.alert("Erro", "Por favor, preencha todos os campos.");
-      return;
-    }
-
-    await createDeck({
-      name,
-      description,
-    });
-
-    dispatch({ type: "RESET" });
+  const handleCreate = async ({ name, description }: { name: string; description: string }) => {
+    await createDeck({ name, description });
     router.replace("/");
   };
 
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: "Criar Deck" }} />
-      <Text style={styles.label}>Nome</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ex: Japonês básico"
-        value={name}
-        onChangeText={(t) =>
-          dispatch({
-            type: "SET_NAME",
-            payload: t,
-          })
-        }
-      />
-
-      <Text style={styles.label}>Descrição</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ex: Introdução ao japonês"
-        value={description}
-        onChangeText={(t) =>
-          dispatch({
-            type: "SET_DESCRIPTION",
-            payload: t,
-          })
-        }
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Criar</Text>
-      </TouchableOpacity>
+      <DeckForm onSubmit={handleCreate} submitLabel="Criar" />
     </View>
   );
 }
@@ -102,32 +24,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    gap: 16,
     backgroundColor: "#fff",
-  },
-  label: {
-    fontSize: 16,
-    fontFamily: "Lato-Regular",
-    color: colors.fg,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    fontFamily: "Lato-Regular",
-  },
-  button: {
-    backgroundColor: colors.fg,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 24,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontFamily: "Lato-Bold",
   },
 });

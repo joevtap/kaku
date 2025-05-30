@@ -139,6 +139,37 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     );
   }
 
+  public async updateDeck(
+    slug: string,
+    updatedData: { name: string; description: string }
+  ): Promise<void> {
+    const filePath = Paths.join(this.decksPath, `${slug}.json`);
+    const file = new File(filePath);
+
+    if (!file.exists) {
+      throw new Error(`[DecksFileSystemHandler] Deck "${slug}" não encontrado.`);
+    }
+
+    const currentDeck = JSON.parse(file.text()) as StaticDeck;
+    currentDeck.name = updatedData.name;
+    currentDeck.description = updatedData.description;
+
+    file.write(JSON.stringify(currentDeck));
+    console.log(`[DecksFileSystemHandler] Arquivo do deck "${slug}" atualizado.`);
+
+    const manifest = new File(Paths.join(Paths.document, "manifest.json"));
+    const manifestData = JSON.parse(manifest.text()) as Manifest;
+
+    const deckIndex = manifestData.decks.findIndex((d) => d.slug === slug);
+    if (deckIndex !== -1) {
+      manifestData.decks[deckIndex].name = updatedData.name;
+      manifestData.decks[deckIndex].description = updatedData.description;
+    }
+
+    manifest.write(JSON.stringify(manifestData));
+    console.log(`[DecksFileSystemHandler] Manifesto atualizado para o deck "${slug}".`);
+  }
+
   public async deleteDeck(slug: string): Promise<void> {
     const file = new File(Paths.join(this.decksPath, `${slug}.json`));
     const manifest = new File(Paths.join(Paths.document, "manifest.json"));
