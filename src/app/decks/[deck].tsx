@@ -1,12 +1,12 @@
 import { colors } from "@/src/constants/colors";
 import { fonts } from "@/src/constants/fonts";
+import { useDeleteCard } from "@/src/hooks/useDeleteCard";
+import { useFetchDeck } from "@/src/hooks/useFetchDeck";
 import { FlashCard, FlashCardId } from "@/src/types/Deck";
+import { Pencil, Plus, Trash } from "@icons";
 import { Link, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { FlatList, StyleSheet, Text, View, Pressable } from "react-native";
-import { Plus, Trash } from "@icons";
-import { useFetchDeck } from "@/src/hooks/useFetchDeck";
-import { useDeleteCard } from "@/src/hooks/useDeleteCard";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function DeckPage() {
   const { deck: deckSlug } = useLocalSearchParams();
@@ -51,13 +51,26 @@ export default function DeckPage() {
             })}
           </View>
         </View>
-        <Pressable
-          onPress={() => {
-            handleDeleteCard(item.id);
-          }}
-        >
-          <Trash size={24} color="#000" />
-        </Pressable>
+        <View style={styles.iconsContainer}>
+          <Link
+            href={{
+              pathname: "/cards/update",
+              params: { deck: deckSlug, card: JSON.stringify(item)},
+            }}
+            asChild
+          >
+            <Pressable>
+              <Pencil size={24} color="#000" />
+            </Pressable>
+          </Link>
+          <Pressable
+            onPress={() => {
+              handleDeleteCard(item.id);
+            }}
+          >
+            <Trash size={24} color="#000" />
+          </Pressable>
+        </View>
       </View>
     );
   };
@@ -142,6 +155,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 4,
+  },
+  iconsContainer: {
+    flexDirection: "row",
+    gap: 16,
   },
 });
 

@@ -17,7 +17,7 @@ export function useCreateDeck() {
 
       await decksFileSystemHandler.write(deck);
     } catch (error) {
-      console.error("Error creating card:", error);
+      console.error("Error creating deck:", error);
       throw error;
     }
   };
