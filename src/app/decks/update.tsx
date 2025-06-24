@@ -1,20 +1,26 @@
-import { useLocalSearchParams, Stack, useRouter } from "expo-router";
-import {   FlatList, Pressable, StyleSheet, Text, View, Alert, } from "react-native";
 import { DeckForm } from "@/src/components/Deck/DeckForm";
-import { useUpdateDeck } from "@/src/hooks/useUpdateDeck";
 import { useFetchManifest } from "@/src/hooks/useFetchManifest";
-import { colors } from "@/src/constants/colors";
+import { useUpdateDeck } from "@/src/hooks/useUpdateDeck";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function UpdateDeckPage() {
-  const { deck: slug } = useLocalSearchParams();
+  const { deck: slugParam } = useLocalSearchParams();
+  const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam;
   const { updateDeck } = useUpdateDeck();
   const [manifest, error, loading] = useFetchManifest();
   const router = useRouter();
 
   const currentDeck = manifest?.decks.find((d) => d.slug === slug);
 
-  const handleUpdate = async ({ name, description }: { name: string; description: string }) => {
+  const handleUpdate = async ({
+    name,
+    description,
+  }: {
+    name: string;
+    description: string;
+  }) => {
     if (!slug) return;
 
     try {

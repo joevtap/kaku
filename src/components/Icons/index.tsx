@@ -25,4 +25,8 @@ const Pencil = (props: IconProps) => (
   <MaterialCommunityIcons name="pencil" size={props.size} color={props.color} />
 );
 
-export { Cards, Home, Plus, Trash, Pencil };
+const Cached = (props: IconProps) => (
+  <MaterialCommunityIcons name="cached" size={props.size} color={props.color} />
+);
+
+export { Cards, Home, Plus, Trash, Pencil, Cached };

@@ -1,13 +1,13 @@
-import React, { useReducer, useEffect } from "react";
+import { colors } from "@/src/constants/colors";
+import React, { useEffect, useReducer } from "react";
 import {
-  View,
+  Alert,
+  StyleSheet,
   Text,
   TextInput,
-  StyleSheet,
   TouchableOpacity,
-  Alert,
+  View,
 } from "react-native";
-import { colors } from "@/src/constants/colors";
 
 type FormProps = {
   initialName?: string;
@@ -82,9 +82,7 @@ export function DeckForm({
         style={styles.input}
         placeholder="Ex: Introdução ao japonês"
         value={description}
-        onChangeText={(t) =>
-          dispatch({ type: "SET_DESCRIPTION", payload: t })
-        }
+        onChangeText={(t) => dispatch({ type: "SET_DESCRIPTION", payload: t })}
       />
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
