@@ -83,6 +83,10 @@ export default function Decks() {
     router.push({ pathname: "decks/update", params: { deck: slug } });
   };
 
+  const handleDeckReviewPress = (slug: string) => {
+    router.push({ pathname: "decks/review", params: { deck: slug } });
+  };
+
   const renderDecks = ({
     item,
     index,
@@ -114,7 +118,7 @@ export default function Decks() {
           <View style={styles.deckActions}>
             <Pressable
               style={{ marginRight: 16 }}
-              onPress={() => handleDeckUpdatePress(item.slug)}
+              onPress={() => handleDeckReviewPress(item.slug)}
             >
               <Cached size={24} color="#000" />
             </Pressable>
