@@ -134,8 +134,9 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
 
   public async readReviewedDeckUntilToday(slug: string): Promise<ReviewedDeck> {
     const now = new Date();
-    const hoursUntilTomorrow = this._hoursUntilTomorrow(now, 0);
-    const limitDate = addHours(now, hoursUntilTomorrow);
+    // const hoursUntilTomorrow = this._hoursUntilTomorrow(now, 0);
+    // const limitDate = addHours(now, hoursUntilTomorrow);
+    const limitDate = new Date();
     const file = new File(Paths.join(this.reviewedDecksPath, `${slug}.json`));
 
     if (!file.exists || file.size === 0) {
@@ -145,11 +146,11 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     const reviewedDeckFromFile = JSON.parse(file.text()) as ReviewedDeck;
 
     const reviewsReadyToday = reviewedDeckFromFile.reviews
-      .map(review => {
+      .map((review) => {
         review.card.due = new Date(review.card.due);
         return review;
       })
-      .filter(review => {
+      .filter((review) => {
         return review.card.due <= limitDate;
       });
 
@@ -441,7 +442,11 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     cardId: FlashCardId,
     grade: number,
     now: Date = new Date(),
-    f: FSRS = fsrs(),
+    f: FSRS = fsrs({
+      enable_fuzz: true,
+      maximum_interval: 1, // 1 hour
+      request_retention: 0.8,
+    }),
   ): Promise<ReviewedDeck> {
     const deckFile = new File(Paths.join(this.decksPath, `${slug}.json`));
     const reviewedDeckFile = new File(

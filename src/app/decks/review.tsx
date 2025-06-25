@@ -124,25 +124,11 @@ export default function ReviewPage() {
               <Text style={styles.ratingButtonText}>Errei</Text>
             </Pressable>
             <Pressable
-              style={[styles.ratingButton, styles.ratingHard]}
-              onPress={() => handleGradeCard(2)}
-              disabled={isReviewing}
-            >
-              <Text style={styles.ratingButtonText}>Difícil</Text>
-            </Pressable>
-            <Pressable
               style={[styles.ratingButton, styles.ratingGood]}
               onPress={() => handleGradeCard(3)}
               disabled={isReviewing}
             >
-              <Text style={styles.ratingButtonText}>Bom</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.ratingButton, styles.ratingEasy]}
-              onPress={() => handleGradeCard(4)}
-              disabled={isReviewing}
-            >
-              <Text style={styles.ratingButtonText}>Fácil</Text>
+              <Text style={styles.ratingButtonText}>Acertei</Text>
             </Pressable>
           </View>
         )}
@@ -224,9 +210,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   ratingAgain: { backgroundColor: "#DC2626" }, // Vermelho
-  ratingHard: { backgroundColor: "#F97316" }, // Laranja
   ratingGood: { backgroundColor: "#2563EB" }, // Azul
-  ratingEasy: { backgroundColor: "#16A34A" }, // Verde
 });
 
 const getTextStyle = (font: keyof typeof fonts, index: number) => ({

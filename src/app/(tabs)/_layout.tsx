@@ -21,7 +21,7 @@ export default function TabLayout() {
           name="review"
           options={{
             title: "Revisão",
-            tabBarIcon: ({ color }) => <Cached size={28} color={color} />, 
+            tabBarIcon: ({ color }) => <Cached size={28} color={color} />,
           }}
         />
       </Tabs>
