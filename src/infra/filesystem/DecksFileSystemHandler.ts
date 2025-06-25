@@ -135,13 +135,28 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
   public async readReviewedDeckUntilToday(slug: string): Promise<ReviewedDeck> {
     const now = new Date();
     const hoursUntilTomorrow = this._hoursUntilTomorrow(now, 0);
+    const limitDate = addHours(now, hoursUntilTomorrow);
     const file = new File(Paths.join(this.reviewedDecksPath, `${slug}.json`));
 
-    const reviewedDeck = JSON.parse(file.text()) as ReviewedDeck;
-    reviewedDeck.reviews = reviewedDeck.reviews.filter((c) => {
-      return c.card.due <= addHours(now, hoursUntilTomorrow);
-    });
-    return reviewedDeck;
+    if (!file.exists || file.size === 0) {
+      return { slug: slug, reviews: [] };
+    }
+
+    const reviewedDeckFromFile = JSON.parse(file.text()) as ReviewedDeck;
+
+    const reviewsReadyToday = reviewedDeckFromFile.reviews
+      .map(review => {
+        review.card.due = new Date(review.card.due);
+        return review;
+      })
+      .filter(review => {
+        return review.card.due <= limitDate;
+      });
+
+    return {
+      slug: reviewedDeckFromFile.slug,
+      reviews: reviewsReadyToday,
+    };
   }
 
   public async getManifest(): Promise<Manifest> {

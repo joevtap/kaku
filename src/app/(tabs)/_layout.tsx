@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Cards } from "@icons";
+import { Cards, Cached } from "@icons";
 import { colors } from "@/src/constants/colors";
 
 export default function TabLayout() {
@@ -15,6 +15,13 @@ export default function TabLayout() {
           options={{
             title: "Decks",
             tabBarIcon: ({ color }) => <Cards size={28} color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="review"
+          options={{
+            title: "Revisão",
+            tabBarIcon: ({ color }) => <Cached size={28} color={color} />, 
           }}
         />
       </Tabs>
