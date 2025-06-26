@@ -55,7 +55,7 @@ export default function DeckPage() {
           <Link
             href={{
               pathname: "/cards/update",
-              params: { deck: deckSlug, card: JSON.stringify(item)},
+              params: { deck: deckSlug, card: JSON.stringify(item) },
             }}
             asChild
           >

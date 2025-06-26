@@ -1,13 +1,19 @@
-import { Stack, useRouter } from "expo-router";
-import { View, StyleSheet } from "react-native";
 import { DeckForm } from "@/src/components/Deck/DeckForm";
 import { useCreateDeck } from "@/src/hooks/useCreateDeck";
+import { Stack, useRouter } from "expo-router";
+import { StyleSheet, View } from "react-native";
 
 export default function CreateDeckPage() {
   const router = useRouter();
   const { createDeck } = useCreateDeck();
 
-  const handleCreate = async ({ name, description }: { name: string; description: string }) => {
+  const handleCreate = async ({
+    name,
+    description,
+  }: {
+    name: string;
+    description: string;
+  }) => {
     await createDeck({ name, description });
     router.replace("/");
   };

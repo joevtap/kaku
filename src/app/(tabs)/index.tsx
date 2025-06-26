@@ -1,19 +1,18 @@
+import { colors } from "@/src/constants/colors";
 import { useDeleteDeck } from "@/src/hooks/useDeleteDeck";
 import { useFetchManifest } from "@/src/hooks/useFetchManifest";
 import { DeckManifest } from "@/src/types/Manifest";
-import { Plus, Trash } from "@icons";
-import { FontAwesome } from '@expo/vector-icons';
+import { Cached, Pencil, Plus, Trash } from "@icons";
 import { Link, Stack, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
   View,
-  Alert,
 } from "react-native";
-import { colors } from "@/src/constants/colors";
 import Toast from "react-native-toast-message";
 
 export default function Decks() {
@@ -26,50 +25,44 @@ export default function Decks() {
 
   const toggleSelection = (slug: string) => {
     setSelectedDecks((prev) =>
-      prev.includes(slug)
-        ? prev.filter((s) => s !== slug)
-        : [...prev, slug]
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug],
     );
   };
 
   const cancelSelection = () => setSelectedDecks([]);
 
   const handleDeleteSelected = async () => {
-    Alert.alert(
-      "Excluir",
-      `Deseja excluir ${selectedDecks.length} deck(s)?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              for (const slug of selectedDecks) {
-                await deleteDeck(slug);
-              }
-
-              await refetch();
-              cancelSelection();
-
-              Toast.show({
-                type: "success",
-                text1: "Decks excluídos com sucesso!",
-                position: "bottom",
-              });
-            } catch (error) {
-              console.error("Erro ao excluir decks:", error);
-              Toast.show({
-                type: "error",
-                text1: "Erro ao excluir decks",
-                text2: "Tente novamente mais tarde.",
-                position: "bottom",
-              });
+    Alert.alert("Excluir", `Deseja excluir ${selectedDecks.length} deck(s)?`, [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Excluir",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            for (const slug of selectedDecks) {
+              await deleteDeck(slug);
             }
-          },
+
+            await refetch();
+            cancelSelection();
+
+            Toast.show({
+              type: "success",
+              text1: "Decks excluídos com sucesso!",
+              position: "bottom",
+            });
+          } catch (error) {
+            console.error("Erro ao excluir decks:", error);
+            Toast.show({
+              type: "error",
+              text1: "Erro ao excluir decks",
+              text2: "Tente novamente mais tarde.",
+              position: "bottom",
+            });
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleDeckPress = (slug: string) => {
@@ -88,7 +81,7 @@ export default function Decks() {
 
   const handleDeckUpdatePress = (slug: string) => {
     router.push({ pathname: "decks/update", params: { deck: slug } });
-  }
+  };
 
   const renderDecks = ({
     item,
@@ -104,10 +97,7 @@ export default function Decks() {
         key={item.slug}
         onPress={() => handleDeckPress(item.slug)}
         onLongPress={() => handleDeckLongPress(item.slug)}
-        style={[
-          styles.decksListItem,
-          isSelected && styles.selectedItem,
-        ]}
+        style={[styles.decksListItem, isSelected && styles.selectedItem]}
       >
         <View style={styles.deckListItemLeft}>
           <Text style={styles.decksListItemId}>{index + 1}</Text>
@@ -126,7 +116,7 @@ export default function Decks() {
               style={{ marginRight: 16 }}
               onPress={() => handleDeckUpdatePress(item.slug)}
             >
-              <FontAwesome name="pencil" size={24} color="#000" />
+              <Pencil size={24} color="#000" />
             </Pressable>
           </View>
         )}
@@ -157,7 +147,10 @@ export default function Decks() {
                     <Text style={styles.cancelButtonText}>Cancelar</Text>
                   </Pressable>
                   <View style={{ width: 32 }} />
-                  <Pressable onPress={handleDeleteSelected} style={{ marginRight: 10 }}>
+                  <Pressable
+                    onPress={handleDeleteSelected}
+                    style={{ marginRight: 10 }}
+                  >
                     <Trash size={24} color="#000" />
                   </Pressable>
                 </View>

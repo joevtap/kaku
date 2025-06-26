@@ -1,14 +1,15 @@
 import {
   FlashCard,
-  FlashCardBack,
-  FlashCardFront,
   FlashCardId,
   StaticDeck,
+  ReviewedDeck,
 } from "@/src/types/Deck";
 import { Manifest } from "@/src/types/Manifest";
+import { addHours } from "date-fns";
 import { Directory, File, Paths } from "expo-file-system/next";
-import Rusha from "rusha";
 import uuid from "react-native-uuid";
+import Rusha from "rusha";
+import { createEmptyCard, FSRS, fsrs } from "ts-fsrs";
 
 export interface IFileSystemHandler {
   bootstrap(): Promise<void>;
@@ -16,14 +17,24 @@ export interface IFileSystemHandler {
 
 export class DecksFileSystemHandler implements IFileSystemHandler {
   private readonly decksPath: string = Paths.join(Paths.document, "decks");
+  private readonly reviewedDecksPath: string = Paths.join(
+    Paths.document,
+    "reviewed-decks",
+  );
 
   public async bootstrap(): Promise<void> {
     const exampleDeck: StaticDeck = require("@assets/decks/yojijukugo.json");
     const dir = new Directory(this.decksPath);
+    const reviewedDir = new Directory(this.reviewedDecksPath);
 
     if (!dir.exists) {
       dir.create();
       console.log("[DecksFileSystemHandler] Decks directory created");
+    }
+
+    if (!reviewedDir.exists) {
+      reviewedDir.create();
+      console.log("[DecksFileSystemHandler] Reviewed decks directory created");
     }
 
     if (dir.exists) {
@@ -89,6 +100,26 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
 
       console.log(`[DecksFileSystemHandler] Loaded ${dir.list().length} decks`);
     }
+
+    if (reviewedDir.exists) {
+      const file = new File(
+        Paths.join(this.reviewedDecksPath, "yojijukugo.json"),
+      );
+
+      if (!file.exists) {
+        file.create();
+        const reviewedDeck: ReviewedDeck = this._startDeck(
+          exampleDeck,
+          new Date(),
+        );
+        file.write(JSON.stringify(reviewedDeck));
+        console.log("[DecksFileSystemHandler] Reviewed deck file created");
+      } else {
+        console.log(
+          "[DecksFileSystemHandler] Reviewed deck file already exists",
+        );
+      }
+    }
   }
 
   public async read(slug: string): Promise<StaticDeck | null> {
@@ -99,6 +130,34 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
 
     return null;
+  }
+
+  public async readReviewedDeckUntilToday(slug: string): Promise<ReviewedDeck> {
+    const now = new Date();
+    // const hoursUntilTomorrow = this._hoursUntilTomorrow(now, 0);
+    // const limitDate = addHours(now, hoursUntilTomorrow);
+    const limitDate = new Date();
+    const file = new File(Paths.join(this.reviewedDecksPath, `${slug}.json`));
+
+    if (!file.exists || file.size === 0) {
+      return { slug: slug, reviews: [] };
+    }
+
+    const reviewedDeckFromFile = JSON.parse(file.text()) as ReviewedDeck;
+
+    const reviewsReadyToday = reviewedDeckFromFile.reviews
+      .map((review) => {
+        review.card.due = new Date(review.card.due);
+        return review;
+      })
+      .filter((review) => {
+        return review.card.due <= limitDate;
+      });
+
+    return {
+      slug: reviewedDeckFromFile.slug,
+      reviews: reviewsReadyToday,
+    };
   }
 
   public async getManifest(): Promise<Manifest> {
@@ -112,8 +171,12 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
   public async write(deck: StaticDeck): Promise<void> {
     const file = new File(Paths.join(this.decksPath, `${deck.slug}.json`));
     const manifest = new File(Paths.join(Paths.document, "manifest.json"));
+    const reviewedDeckFile = new File(
+      Paths.join(this.reviewedDecksPath, `${deck.slug}.json`),
+    );
 
     if (!file.exists) file.create();
+    if (!reviewedDeckFile.exists) reviewedDeckFile.create();
     file.write(JSON.stringify(deck));
 
     if (!manifest.exists) manifest.create();
@@ -143,17 +206,25 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     console.log(
       `[DecksFileSystemHandler] Deck "${deck.name}" salvo com sucesso.`,
     );
+
+    const reviewedDeck: ReviewedDeck = this._startDeck(deck, new Date());
+    reviewedDeckFile.write(JSON.stringify(reviewedDeck));
+    console.log(
+      `[DecksFileSystemHandler] Reviewed deck "${deck.name}" salvo com sucesso.`,
+    );
   }
 
   public async updateDeck(
     slug: string,
-    updatedData: { name: string; description: string }
+    updatedData: { name: string; description: string },
   ): Promise<void> {
     const filePath = Paths.join(this.decksPath, `${slug}.json`);
     const file = new File(filePath);
 
     if (!file.exists) {
-      throw new Error(`[DecksFileSystemHandler] Deck "${slug}" não encontrado.`);
+      throw new Error(
+        `[DecksFileSystemHandler] Deck "${slug}" não encontrado.`,
+      );
     }
 
     const currentDeck = JSON.parse(file.text()) as StaticDeck;
@@ -161,7 +232,9 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     currentDeck.description = updatedData.description;
 
     file.write(JSON.stringify(currentDeck));
-    console.log(`[DecksFileSystemHandler] Arquivo do deck "${slug}" atualizado.`);
+    console.log(
+      `[DecksFileSystemHandler] Arquivo do deck "${slug}" atualizado.`,
+    );
 
     const manifest = new File(Paths.join(Paths.document, "manifest.json"));
     const manifestData = JSON.parse(manifest.text()) as Manifest;
@@ -173,12 +246,17 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
 
     manifest.write(JSON.stringify(manifestData));
-    console.log(`[DecksFileSystemHandler] Manifesto atualizado para o deck "${slug}".`);
+    console.log(
+      `[DecksFileSystemHandler] Manifesto atualizado para o deck "${slug}".`,
+    );
   }
 
   public async deleteDeck(slug: string): Promise<void> {
     const file = new File(Paths.join(this.decksPath, `${slug}.json`));
     const manifest = new File(Paths.join(Paths.document, "manifest.json"));
+    const reviewedDeckFile = new File(
+      Paths.join(this.reviewedDecksPath, `${slug}.json`),
+    );
     const manifestData = JSON.parse(manifest.text()) as Manifest;
     const deckIndex = manifestData.decks.findIndex((d) => d.slug === slug);
     if (deckIndex !== -1) {
@@ -192,6 +270,7 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
     if (file.exists) {
       file.delete();
+      reviewedDeckFile.delete();
       console.log(`[DecksFileSystemHandler] Arquivo "${slug}.json" removido.`);
     } else {
       console.log(
@@ -229,6 +308,24 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
     }
     manifest.write(JSON.stringify(manifestData));
     console.log(`[DecksFileSystemHandler] Card added to deck "${deck.name}".`);
+
+    const reviewedDeckFile = new File(
+      Paths.join(this.reviewedDecksPath, `${slug}.json`),
+    );
+
+    const reviewedDeckData = JSON.parse(
+      reviewedDeckFile.text(),
+    ) as ReviewedDeck;
+    reviewedDeckData.reviews.push(
+      createEmptyCard(new Date(), (d) => ({
+        id: newCard.id,
+        card: d,
+      })),
+    );
+    reviewedDeckFile.write(JSON.stringify(reviewedDeckData));
+    console.log(
+      `[DecksFileSystemHandler] Card added to reviewed deck "${deck.name}".`,
+    );
   }
 
   public async updateCard(slug: string, updatedCard: FlashCard): Promise<void> {
@@ -258,6 +355,35 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
         `[DecksFileSystemHandler] Card with id "${updatedCard.id}" not found in deck "${slug}".`,
       );
     }
+
+    const reviewedDeckFile = new File(
+      Paths.join(this.reviewedDecksPath, `${slug}.json`),
+    );
+    const reviewedDeckData = JSON.parse(
+      reviewedDeckFile.text(),
+    ) as ReviewedDeck;
+
+    const reviewIndex = reviewedDeckData.reviews.findIndex(
+      (review) => review.id === updatedCard.id,
+    );
+
+    if (reviewIndex !== -1) {
+      reviewedDeckData.reviews[reviewIndex] = createEmptyCard(
+        new Date(),
+        (d) => ({
+          id: updatedCard.id,
+          card: d,
+        }),
+      );
+      reviewedDeckFile.write(JSON.stringify(reviewedDeckData));
+      console.log(
+        `[DecksFileSystemHandler] Reviewed card with id "${updatedCard.id}" updated in reviewed deck "${slug}".`,
+      );
+    } else {
+      console.log(
+        `[DecksFileSystemHandler] Reviewed card with id "${updatedCard.id}" not found in reviewed deck "${slug}".`,
+      );
+    }
   }
 
   public async deleteCard(slug: string, id: FlashCardId) {
@@ -285,11 +411,111 @@ export class DecksFileSystemHandler implements IFileSystemHandler {
         `[DecksFileSystemHandler] Card with id "${id}" not found in deck "${slug}".`,
       );
     }
+
+    const reviewedDeckFile = new File(
+      Paths.join(this.reviewedDecksPath, `${slug}.json`),
+    );
+
+    const reviewedDeckData = JSON.parse(
+      reviewedDeckFile.text(),
+    ) as ReviewedDeck;
+
+    const reviewIndex = reviewedDeckData.reviews.findIndex(
+      (review) => review.id === id,
+    );
+
+    if (reviewIndex !== -1) {
+      reviewedDeckData.reviews.splice(reviewIndex, 1);
+      reviewedDeckFile.write(JSON.stringify(reviewedDeckData));
+      console.log(
+        `[DecksFileSystemHandler] Reviewed card with id "${id}" removed from reviewed deck "${slug}".`,
+      );
+    } else {
+      console.log(
+        `[DecksFileSystemHandler] Reviewed card with id "${id}" not found in reviewed deck "${slug}".`,
+      );
+    }
+  }
+
+  public async reviewCard(
+    slug: string,
+    cardId: FlashCardId,
+    grade: number,
+    now: Date = new Date(),
+    f: FSRS = fsrs({
+      enable_fuzz: true,
+      maximum_interval: 1, // 1 hour
+      request_retention: 0.8,
+    }),
+  ): Promise<ReviewedDeck> {
+    const deckFile = new File(Paths.join(this.decksPath, `${slug}.json`));
+    const reviewedDeckFile = new File(
+      Paths.join(this.reviewedDecksPath, `${slug}.json`),
+    );
+
+    if (!deckFile.exists || !reviewedDeckFile.exists) {
+      throw new Error(`Deck "${slug}" not found.`);
+    }
+
+    const deck = JSON.parse(deckFile.text()) as StaticDeck;
+    const reviewedDeck = JSON.parse(reviewedDeckFile.text()) as ReviewedDeck;
+    const card = deck.cards.find((c) => c.id === cardId);
+    if (!card) {
+      throw new Error(`Card with id ${cardId} not found`);
+    }
+
+    const progress = reviewedDeck.reviews.find((c) => c.id === cardId);
+    if (!progress) {
+      throw new Error(`Progress for card with id ${cardId} not found`);
+    }
+
+    const { card: newCard, log } = f.next(progress.card, now, grade);
+
+    reviewedDeck.reviews = reviewedDeck.reviews.map((c) => {
+      if (c.id === cardId) {
+        return {
+          ...c,
+          card: newCard,
+          log: log,
+        };
+      }
+      return c;
+    });
+
+    reviewedDeckFile.write(JSON.stringify(reviewedDeck));
+
+    return reviewedDeck;
   }
 
   private async _digest(str: string) {
     const digest = Rusha.createHash().update(str).digest("hex").toString();
 
     return digest;
+  }
+
+  private _startDeck(deck: StaticDeck, now: Date): ReviewedDeck {
+    return {
+      slug: deck.slug,
+      reviews: deck.cards.map((c) => {
+        return createEmptyCard(now, (d) => {
+          return {
+            id: c.id,
+            card: d,
+          };
+        });
+      }),
+    };
+  }
+
+  private _hoursUntilTomorrow(now: Date, dayStartsAt = 0) {
+    if (dayStartsAt < 0 || dayStartsAt > 23) {
+      throw new Error("dayStartsAt must be between 0 and 23");
+    }
+
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(dayStartsAt, 0, 0, 0);
+
+    return Math.ceil((tomorrow.getTime() - now.getTime()) / (1000 * 60 * 60));
   }
 }
